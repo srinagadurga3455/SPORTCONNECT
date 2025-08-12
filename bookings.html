@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SportConnect | Book Your Slot</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏆</text></svg>">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
+    
+    <!-- AOS Animation Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <style>
+      :root {
+        --primary: #4361ee;
+        --primary-dark: #3a56d4;
+        --primary-light: #ebf0ff;
+        --secondary: #3f37c9;
+        --accent: #f72585;
+        --dark: #1a1a2e;
+        --light: #f8f9fa;
+        --success: #4cc9f0;
+        --warning: #f8961e;
+        --danger: #ef233c;
+        --gray: #6c757d;
+        --gray-light: #e9ecef;
+      }
+      
+      body {
+        font-family: 'Poppins', sans-serif;
+        background-color: var(--light);
+        color: var(--dark);
+        overflow-x: hidden;
+      }
+      
+      h1, h2, h3, h4, h5, h6 {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 700;
+      }
+      
+      /* Navbar Styles */
+      .navbar {
+        background-color: rgba(255, 255, 255, 0.95);
+        box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        padding: 15px 0;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1030;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+      }
+      
+      .navbar.scrolled {
+        padding: 10px 0;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      }
+      
+      .navbar-brand {
+        font-weight: 800;
+        font-size: 1.8rem;
+        color: var(--primary) !important;
+        display: flex;
+        align-items: center;
+      }
+      
+      .navbar-brand span {
+        color: var(--dark);
+      }
+      
+      .nav-link {
+        font-weight: 500;
+        color: var(--dark) !important;
+        margin: 0 8px;
+        position: relative;
+        padding: 8px 12px !important;
+      }
+      
+      /* Slot Booking Page Styles */
+      .slot-booking-hero {
+        padding: 150px 0 80px;
+        background: linear-gradient(135deg, rgba(67, 97, 238, 0.1) 0%, rgba(248, 37, 133, 0.05) 100%);
+      }
+      
+      .booking-container {
+        background-color: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+        margin-bottom: 50px;
+      }
+      
+      .booking-steps {
+        padding: 30px;
+        background-color: var(--primary-light);
+        border-right: 1px solid var(--gray-light);
+      }
+      
+      .step {
+        display: flex;
+        align-items: center;
+        margin-bottom: 25px;
+        padding: 15px;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+      }
+      
+      .step.active {
+        background-color: white;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      }
+      
+      .step-number {
+        width: 40px;
+        height: 40px;
+        background-color: var(--primary);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        margin-right: 15px;
+        flex-shrink: 0;
+      }
+      
+      .step.active .step-number {
+        background-color: var(--accent);
+      }
+      
+      .step.completed .step-number {
+        background-color: var(--success);
+      }
+      
+      .step-content h5 {
+        font-weight: 600;
+        margin-bottom: 5px;
+      }
+      
+      .step-content p {
+        color: var(--gray);
+        font-size: 0.9rem;
+        margin-bottom: 0;
+      }
+      
+      .booking-form {
+        padding: 30px;
+      }
+      
+      .form-section {
+        display: none;
+      }
+      
+      .form-section.active {
+        display: block;
+        animation: fadeIn 0.5s ease;
+      }
+      
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      
+      .sport-option {
+        border: 2px solid var(--gray-light);
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 15px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+      
+      .sport-option:hover, .sport-option.selected {
+        border-color: var(--primary);
+        background-color: var(--primary-light);
+      }
+      
+      .sport-option.selected {
+        position: relative;
+      }
+      
+      .sport-option.selected:after {
+        content: '\2713';
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        width: 25px;
+        height: 25px;
+        background-color: var(--primary);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+      }
+      
+      .sport-option img {
+        width: 60px;
+        height: 60px;
+        object-fit: contain;
+        margin-bottom: 15px;
+      }
+      
+      .sport-option h5 {
+        font-weight: 600;
+        margin-bottom: 5px;
+      }
+      
+      .sport-option p {
+        color: var(--gray);
+        font-size: 0.9rem;
+        margin-bottom: 0;
+      }
+      
+      .coach-card {
+        border: 2px solid var(--gray-light);
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 15px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+      
+      .coach-card:hover, .coach-card.selected {
+        border-color: var(--primary);
+        background-color: var(--primary-light);
+      }
+      
+      .coach-card.selected {
+        position: relative;
+      }
+      
+      .coach-card.selected:after {
+        content: '\2713';
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        width: 25px;
+        height: 25px;
+        background-color: var(--primary);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+      }
+      
+      .coach-img {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-right: 15px;
+      }
+      
+      .coach-info h5 {
+        font-weight: 600;
+        margin-bottom: 5px;
+      }
+      
+      .coach-specialty {
+        display: inline-block;
+        background-color: var(--primary);
+        color: white;
+        padding: 3px 10px;
+        border-radius: 50px;
+        font-size: 0.8rem;
+        margin-bottom: 5px;
+      }
+      
+      .coach-rating {
+        color: var(--warning);
+        margin-bottom: 5px;
+      }
+      
+      .coach-price {
+        font-weight: 600;
+        color: var(--primary);
+      }
+      
+      .slot-option {
+        border: 2px solid var(--gray-light);
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 15px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-align: center;
+      }
+      
+      .slot-option:hover, .slot-option.selected {
+        border-color: var(--primary);
+        background-color: var(--primary-light);
+      }
+      
+      .slot-option.selected {
+        position: relative;
+      }
+      
+      .slot-option.selected:after {
+        content: '\2713';
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        width: 25px;
+        height: 25px;
+        background-color: var(--primary);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+      }
+      
+      .slot-time {
+        font-weight: 600;
+        margin-bottom: 5px;
+      }
+      
+      .slot-availability {
+        color: var(--success);
+        font-size: 0.9rem;
+      }
+      
+      .slot-unavailable {
+        color: var(--danger);
+        font-size: 0.9rem;
+      }
+      
+      .booking-summary {
+        background-color: var(--light);
+        border-radius: 10px;
+        padding: 20px;
+        margin-top: 30px;
+      }
+      
+      .summary-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--gray-light);
+      }
+      
+      .summary-total {
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: var(--primary);
+      }
+      
+      .btn-prev {
+        background-color: var(--gray-light);
+        color: var(--dark);
+        border: none;
+        border-radius: 50px;
+        padding: 10px 25px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+      }
+      
+      .btn-prev:hover {
+        background-color: var(--gray);
+        color: white;
+      }
+      
+      .btn-next {
+        background: linear-gradient(to right, var(--primary), var(--secondary));
+        color: white;
+        border: none;
+        border-radius: 50px;
+        padding: 10px 25px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+      }
+      
+      .btn-next:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(67, 97, 238, 0.4);
+        color: white;
+      }
+      
+      .btn-complete {
+        background: linear-gradient(to right, var(--success), #00b4d8);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        padding: 10px 25px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(76, 201, 240, 0.3);
+      }
+      
+      .btn-complete:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(76, 201, 240, 0.4);
+        color: white;
+      }
+      
+      /* Responsive Styles */
+      @media (max-width: 991.98px) {
+        .booking-steps {
+          border-right: none;
+          border-bottom: 1px solid var(--gray-light);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg">
+      <div class="container">
+        <a class="navbar-brand" href="index.html">
+          <i class="bi bi-broadcast-pin-fill me-2"></i>
+          Sport<span>Connect</span>
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="index.html">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="index.html#sports">Sports</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="index.html#booking">Book Slot</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="index.html#locations">Locations</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="index.html#contact">Contact</a>
+            </li>
+            <li class="nav-item ms-lg-3 mt-3 mt-lg-0">
+              <a class="btn btn-primary" href="#">Login</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="slot-booking-hero">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-lg-6">
+            <h1 class="hero-title">Book Your Slot</h1>
+            <p class="hero-subtitle">
+              Reserve your preferred time slot for sports facilities or coaching sessions with just a few clicks.
+            </p>
+          </div>
+          <div class="col-lg-6">
+            <div class="hero-image">
+              <img src="https://images.unsplash.com/photo-1517649763962-0c623066013b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Booking sports" class="img-fluid rounded-3">
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Booking Process -->
+    <section class="booking-process">
+      <div class="container">
+        <div class="booking-container">
+          <div class="row">
+            <div class="col-lg-4">
+              <div class="booking-steps">
+                <div class="step active" data-step="1">
+                  <div class="step-number">1</div>
+                  <div class="step-content">
+                    <h5>Choose Sport</h5>
+                    <p>Select your preferred sport</p>
+                  </div>
+                </div>
+                <div class="step" data-step="2">
+                  <div class="step-number">2</div>
+                  <div class="step-content">
+                    <h5>Select Option</h5>
+                    <p>Choose facility or coach</p>
+                  </div>
+                </div>
+                <div class="step" data-step="3">
+                  <div class="step-number">3</div>
+                  <div class="step-content">
+                    <h5>Pick Time Slot</h5>
+                    <p>Select available time</p>
+                  </div>
+                </div>
+                <div class="step" data-step="4">
+                  <div class="step-number">4</div>
+                  <div class="step-content">
+                    <h5>Confirm Booking</h5>
+                    <p>Review and complete</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-8">
+              <div class="booking-form">
+                <!-- Step 1: Choose Sport -->
+                <div class="form-section active" id="step1">
+                  <h4 class="mb-4">Select Your Sport</h4>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="sport-option" data-sport="cricket">
+                        <img src="https://cdn-icons-png.flaticon.com/512/5022/5022385.png" alt="Cricket">
+                        <h5>Cricket</h5>
+                        <p>Book nets or matches</p>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="sport-option" data-sport="football">
+                        <img src="https://cdn-icons-png.flaticon.com/512/5022/5022393.png" alt="Football">
+                        <h5>Football</h5>
+                        <p>Book turf or matches</p>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="sport-option" data-sport="basketball">
+                        <img src="https://cdn-icons-png.flaticon.com/512/5022/5022384.png" alt="Basketball">
+                        <h5>Basketball</h5>
+                        <p>Book court or training</p>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="sport-option" data-sport="tennis">
+                        <img src="https://cdn-icons-png.flaticon.com/512/5022/5022415.png" alt="Tennis">
+                        <h5>Tennis</h5>
+                        <p>Book court or coaching</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="text-end mt-4">
+                    <button class="btn btn-next" onclick="nextStep(1)">Next</button>
+                  </div>
+                </div>
+
+                <!-- Step 2: Select Option -->
+                <div class="form-section" id="step2">
+                  <h4 class="mb-4">Choose Your Option</h4>
+                  <div id="stadiumOptions">
+                    <h5 class="mb-3">Available Stadiums</h5>
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="sport-option" data-option="city-stadium">
+                          <h5>City Stadium</h5>
+                          <p>Professional cricket ground with practice nets</p>
+                          <div class="mt-2">
+                            <span class="badge bg-primary">₹1500/hour</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="sport-option" data-option="community-ground">
+                          <h5>Community Sports Ground</h5>
+                          <p>Well-maintained football turf</p>
+                          <div class="mt-2">
+                            <span class="badge bg-primary">₹1000/hour</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div id="coachOptions" style="display: none;">
+                    <h5 class="mb-3">Available Coaches</h5>
+                    <div class="coach-card" data-coach="coach1">
+                      <div class="d-flex">
+                        <img src="https://randomuser.me/api/portraits/men/42.jpg" class="coach-img" alt="Coach">
+                        <div class="coach-info">
+                          <h5>Rahul Sharma</h5>
+                          <span class="coach-specialty">Cricket Coach</span>
+                          <div class="coach-rating">
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-half"></i>
+                            <span class="ms-2">4.5</span>
+                          </div>
+                          <div class="coach-price">₹2000/session</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="coach-card" data-coach="coach2">
+                      <div class="d-flex">
+                        <img src="https://randomuser.me/api/portraits/women/32.jpg" class="coach-img" alt="Coach">
+                        <div class="coach-info">
+                          <h5>Priya Patel</h5>
+                          <span class="coach-specialty">Football Coach</span>
+                          <div class="coach-rating">
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star"></i>
+                            <span class="ms-2">4.0</span>
+                          </div>
+                          <div class="coach-price">₹1800/session</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="d-flex justify-content-between mt-4">
+                    <button class="btn btn-prev" onclick="prevStep(2)">Previous</button>
+                    <button class="btn btn-next" onclick="nextStep(2)">Next</button>
+                  </div>
+                </div>
+
+                <!-- Step 3: Pick Time Slot -->
+                <div class="form-section" id="step3">
+                  <h4 class="mb-4">Select Time Slot</h4>
+                  <div class="row">
+                    <div class="col-md-4">
+                      <div class="slot-option" data-slot="slot1">
+                        <div class="slot-time">9:00 AM - 11:00 AM</div>
+                        <div class="slot-availability">Available</div>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="slot-option" data-slot="slot2">
+                        <div class="slot-time">11:00 AM - 1:00 PM</div>
+                        <div class="slot-availability">Available</div>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="slot-option" data-slot="slot3">
+                        <div class="slot-time">2:00 PM - 4:00 PM</div>
+                        <div class="slot-availability">Available</div>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="slot-option" data-slot="slot4">
+                        <div class="slot-time">4:00 PM - 6:00 PM</div>
+                        <div class="slot-unavailable">Booked</div>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="slot-option" data-slot="slot5">
+                        <div class="slot-time">6:00 PM - 8:00 PM</div>
+                        <div class="slot-availability">Available</div>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="slot-option" data-slot="slot6">
+                        <div class="slot-time">8:00 PM - 10:00 PM</div>
+                        <div class="slot-availability">Available</div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="booking-summary">
+                    <h5 class="mb-3">Booking Summary</h5>
+                    <div class="summary-item">
+                      <span>Sport:</span>
+                      <span id="summary-sport">-</span>
+                    </div>
+                    <div class="summary-item">
+                      <span>Option:</span>
+                      <span id="summary-option">-</span>
+                    </div>
+                    <div class="summary-item">
+                      <span>Date:</span>
+                      <span id="summary-date">-</span>
+                    </div>
+                    <div class="summary-item">
+                      <span>Time:</span>
+                      <span id="summary-time">-</span>
+                    </div>
+                    <div class="summary-item summary-total">
+                      <span>Total:</span>
+                      <span id="summary-total">-</span>
+                    </div>
+                  </div>
+                  
+                  <div class="d-flex justify-content-between mt-4">
+                    <button class="btn btn-prev" onclick="prevStep(3)">Previous</button>
+                    <button class="btn btn-next" onclick="nextStep(3)">Next</button>
+                  </div>
+                </div>
+
+                <!-- Step 4: Confirm Booking -->
+                <div class="form-section" id="step4">
+                  <h4 class="mb-4">Confirm Your Booking</h4>
+                  <div class="alert alert-success">
+                    <h5><i class="bi bi-check-circle-fill me-2"></i> Your slot is available!</h5>
+                    <p class="mb-0">Please review your booking details below and proceed to payment.</p>
+                  </div>
+                  
+                  <div class="booking-summary">
+                    <h5 class="mb-3">Booking Details</h5>
+                    <div class="summary-item">
+                      <span>Sport:</span>
+                      <span>Cricket</span>
+                    </div>
+                    <div class="summary-item">
+                      <span>Option:</span>
+                      <span>City Stadium - Cricket Nets</span>
+                    </div>
+                    <div class="summary-item">
+                      <span>Date:</span>
+                      <span>August 25, 2025</span>
+                    </div>
+                    <div class="summary-item">
+                      <span>Time:</span>
+                      <span>2:00 PM - 4:00 PM</span>
+                    </div>
+                    <div class="summary-item">
+                      <span>Duration:</span>
+                      <span>2 hours</span>
+                    </div>
+                    <div class="summary-item summary-total">
+                      <span>Total Amount:</span>
+                      <span>₹3000</span>
+                    </div>
+                  </div>
+                  
+                  <div class="mt-4">
+                    <div class="form-check mb-3">
+                      <input class="form-check-input" type="checkbox" id="termsCheck" required>
+                      <label class="form-check-label" for="termsCheck">
+                        I agree to the <a href="#">terms and conditions</a>
+                      </label>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                      <button class="btn btn-prev" onclick="prevStep(4)">Previous</button>
+                      <button class="btn btn-complete" onclick="completeBooking()">
+                        <i class="bi bi-credit-card-fill me-2"></i> Complete Booking
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <div class="row g-4">
+          <div class="col-lg-4">
+            <div class="footer-about">
+              <a href="index.html" class="footer-logo">
+                <i class="bi bi-broadcast-pin-fill me-2"></i>
+                SportConnect
+              </a>
+              <p>Connecting sports enthusiasts to players, teams and events in their area. Join our community today!</p>
+              <div class="social-links">
+                <a href="#"><i class="bi bi-facebook"></i></a>
+                <a href="#"><i class="bi bi-twitter"></i></a>
+                <a href="#"><i class="bi bi-instagram"></i></a>
+                <a href="#"><i class="bi bi-linkedin"></i></a>
+                <a href="#"><i class="bi bi-youtube"></i></a>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-2 col-md-4">
+            <div class="footer-links">
+              <h5>Quick Links</h5>
+              <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="index.html#sports">Sports</a></li>
+                <li><a href="index.html#booking">Book Slot</a></li>
+                <li><a href="index.html#locations">Locations</a></li>
+                <li><a href="index.html#contact">Contact</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-lg-2 col-md-4">
+            <div class="footer-links">
+              <h5>Sports</h5>
+              <ul>
+                <li><a href="#">Cricket</a></li>
+                <li><a href="#">Football</a></li>
+                <li><a href="#">Basketball</a></li>
+                <li><a href="#">Tennis</a></li>
+                <li><a href="#">Badminton</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="footer-links">
+              <h5>Contact Info</h5>
+              <ul>
+                <li><i class="bi bi-geo-alt-fill me-2"></i> 123 Sports Avenue, Hyderabad, India</li>
+                <li><i class="bi bi-telephone-fill me-2"></i> +91 98765 43210</li>
+                <li><i class="bi bi-envelope-fill me-2"></i> contact@sportconnect.com</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2025 SportConnect. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- AOS Animation Library -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <script>
+      // Initialize AOS animation library
+      AOS.init({
+        duration: 800,
+        easing: 'ease-in-out',
+        once: true
+      });
+      
+      // Get booking type from URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const bookingType = urlParams.get('type');
+      
+      // Show appropriate options based on booking type
+      if (bookingType === 'coaching') {
+        document.getElementById('stadiumOptions').style.display = 'none';
+        document.getElementById('coachOptions').style.display = 'block';
+      }
+      
+      // Step navigation
+      let currentStep = 1;
+      
+      function nextStep(step) {
+        // Validate current step before proceeding
+        if (step === 1 && !document.querySelector('.sport-option.selected')) {
+          alert('Please select a sport');
+          return;
+        }
+        if (step === 2 && !document.querySelector('.sport-option.selected') && !document.querySelector('.coach-card.selected')) {
+          alert('Please select an option');
+          return;
+        }
+        if (step === 3 && !document.querySelector('.slot-option.selected')) {
+          alert('Please select a time slot');
+          return;
+        }
+        
+        // Update steps UI
+        document.querySelector(`.step[data-step="${currentStep}"]`).classList.remove('active');
+        document.querySelector(`.step[data-step="${currentStep}"]`).classList.add('completed');
+        currentStep++;
+        document.querySelector(`.step[data-step="${currentStep}"]`).classList.add('active');
+        
+        // Update form sections
+        document.querySelectorAll('.form-section').forEach(section => {
+          section.classList.remove('active');
+        });
+        document.getElementById(`step${currentStep}`).classList.add('active');
+        
+        // Update summary if on step 3
+        if (currentStep === 3) {
+          updateSummary();
+        }
+      }
+      
+      function prevStep(step) {
+        // Update steps UI
+        document.querySelector(`.step[data-step="${currentStep}"]`).classList.remove('active');
+        currentStep--;
+        document.querySelector(`.step[data-step="${currentStep}"]`).classList.add('active');
+        document.querySelector(`.step[data-step="${currentStep}"]`).classList.remove('completed');
+        
+        // Update form sections
+        document.querySelectorAll('.form-section').forEach(section => {
+          section.classList.remove('active');
+        });
+        document.getElementById(`step${currentStep}`).classList.add('active');
+      }
+      
+      function updateSummary() {
+        const selectedSport = document.querySelector('.sport-option.selected')?.querySelector('h5')?.textContent || '-';
+        const selectedOption = document.querySelector('.sport-option.selected')?.querySelector('h5')?.textContent || 
+                              document.querySelector('.coach-card.selected')?.querySelector('h5')?.textContent || '-';
+        
+        document.getElementById('summary-sport').textContent = selectedSport;
+        document.getElementById('summary-option').textContent = selectedOption;
+        
+        // Set today's date + 3 days as default
+        const today = new Date();
+        today.setDate(today.getDate() + 3);
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('summary-date').textContent = today.toLocaleDateString('en-US', options);
+        
+        // Update total price
+        if (bookingType === 'coaching') {
+          document.getElementById('summary-total').textContent = '₹2000';
+        } else {
+          document.getElementById('summary-total').textContent = '₹3000';
+        }
+      }
+      
+      function completeBooking() {
+        if (!document.getElementById('termsCheck').checked) {
+          alert('Please agree to the terms and conditions');
+          return;
+        }
+        
+        alert('Booking successful! A confirmation has been sent to your email.');
+        // In a real app, you would submit the form to a server here
+      }
+      
+      // Add click handlers for option selection
+      document.querySelectorAll('.sport-option').forEach(option => {
+        option.addEventListener('click', function() {
+          document.querySelectorAll('.sport-option').forEach(opt => opt.classList.remove('selected'));
+          this.classList.add('selected');
+        });
+      });
+      
+      document.querySelectorAll('.coach-card').forEach(card => {
+        card.addEventListener('click', function() {
+          document.querySelectorAll('.coach-card').forEach(c => c.classList.remove('selected'));
+          this.classList.add('selected');
+        });
+      });
+      
+      document.querySelectorAll('.slot-option').forEach(slot => {
+        slot.addEventListener('click', function() {
+          if (!this.querySelector('.slot-unavailable')) {
+            document.querySelectorAll('.slot-option').forEach(s => s.classList.remove('selected'));
+            this.classList.add('selected');
+            document.getElementById('summary-time').textContent = this.querySelector('.slot-time').textContent;
+          }
+        });
+      });
+      
+      // Navbar scroll effect
+      const navbar = document.querySelector('.navbar');
+      
+      window.addEventListener('scroll', function() {
+        if (window.pageYOffset > 50) {
+          navbar.classList.add('scrolled');
+        } else {
+          navbar.classList.remove('scrolled');
+        }
+      });
+    </script>
+  </body>
+</html>
