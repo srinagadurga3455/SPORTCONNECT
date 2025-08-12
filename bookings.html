@@ -22,6 +22,26 @@
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     
     <style>
+      /* Add to Calendar Buttons */
+.btn-outline-primary {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--primary);
+  color: white;
+}
+
+.btn-outline-secondary {
+  border-color: var(--gray);
+  color: var(--gray);
+}
+
+.btn-outline-secondary:hover {
+  background-color: var(--gray);
+  color: white;
+}
       :root {
         --primary: #4361ee;
         --primary-dark: #3a56d4;
@@ -459,7 +479,7 @@
               <a class="nav-link" href="index.html#contact">Contact</a>
             </li>
             <li class="nav-item ms-lg-3 mt-3 mt-lg-0">
-              <a class="btn btn-primary" href="#">Login</a>
+              <a class="btn btn-primary" href="login.html">Login</a>
             </li>
           </ul>
         </div>
@@ -721,6 +741,20 @@
                       <span>Sport:</span>
                       <span>Cricket</span>
                     </div>
+                    
+                    <!-- Add this right after the booking summary in step 4 -->
+<div class="mt-4">
+  <h5 class="mb-3">Add to Calendar</h5>
+  <div class="d-flex flex-wrap gap-2">
+    <button class="btn btn-outline-primary" onclick="addToGoogleCalendar()">
+      <i class="bi bi-google me-2"></i> Google Calendar
+    </button>
+    <button class="btn btn-outline-secondary" onclick="downloadICalFile()">
+      <i class="bi bi-calendar-plus me-2"></i> iCal File
+    </button>
+  </div>
+</div>
+
                     <div class="summary-item">
                       <span>Option:</span>
                       <span>City Stadium - Cricket Nets</span>
@@ -968,6 +1002,70 @@
           navbar.classList.remove('scrolled');
         }
       });
+
+      function addToGoogleCalendar() {
+  const eventTitle = `SportConnect Booking: ${document.getElementById('summary-sport').textContent}`;
+  const eventDate = document.getElementById('summary-date').textContent;
+  const eventTime = document.getElementById('summary-time').textContent.split(' - ')[0];
+  const eventEndTime = document.getElementById('summary-time').textContent.split(' - ')[1];
+  
+  // Format date for Google Calendar (YYYYMMDD)
+  const dateObj = new Date(eventDate);
+  const formattedDate = dateObj.toISOString().split('T')[0].replace(/-/g, '');
+  
+  // Format time (HHMM)
+  const formattedStartTime = eventTime.replace(/:/g, '').replace(/\s/g, '').toUpperCase();
+  const formattedEndTime = eventEndTime.replace(/:/g, '').replace(/\s/g, '').toUpperCase();
+  
+  // Create Google Calendar URL
+  const googleCalendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(eventTitle)}&dates=${formattedDate}T${formattedStartTime}00/${formattedDate}T${formattedEndTime}00&details=${encodeURIComponent('Your sports booking with SportConnect')}&location=${encodeURIComponent('Selected sports facility')}`;
+  
+  // Open in new tab
+  window.open(googleCalendarUrl, '_blank');
+}
+
+function downloadICalFile() {
+  const eventTitle = `SportConnect Booking: ${document.getElementById('summary-sport').textContent}`;
+  const eventDate = document.getElementById('summary-date').textContent;
+  const eventTime = document.getElementById('summary-time').textContent.split(' - ')[0];
+  const eventEndTime = document.getElementById('summary-time').textContent.split(' - ')[1];
+  
+  const dateObj = new Date(eventDate);
+  const startDateTime = new Date(`${dateObj.toDateString()} ${eventTime}`);
+  const endDateTime = new Date(`${dateObj.toDateString()} ${eventEndTime}`);
+  
+  // Format dates for iCal
+  const formatICalDate = (date) => {
+    return date.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}Z/, 'Z');
+  };
+  
+  const icalContent = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//SportConnect//Booking//EN',
+    'BEGIN:VEVENT',
+    `UID:${Date.now()}@sportconnect.com`,
+    `DTSTAMP:${formatICalDate(new Date())}`,
+    `DTSTART:${formatICalDate(startDateTime)}`,
+    `DTEND:${formatICalDate(endDateTime)}`,
+    `SUMMARY:${eventTitle}`,
+    'DESCRIPTION:Your sports booking with SportConnect',
+    'LOCATION:Selected sports facility',
+    'END:VEVENT',
+    'END:VCALENDAR'
+  ].join('\n');
+  
+  // Create download link
+  const blob = new Blob([icalContent], { type: 'text/calendar' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'sportconnect-booking.ics';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
     </script>
   </body>
 </html>
