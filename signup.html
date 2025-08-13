@@ -17,6 +17,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
+    <!-- Google Maps API -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places"></script>
     
     <style>
       :root {
@@ -52,15 +54,18 @@
       .signup-container {
         max-width: 1200px;
         margin: auto;
-        padding: 60px 20px;
+        padding: 20px;
         flex: 1;
+        display: flex;
+        align-items: center;
       }
       
       .signup-card {
         border: none;
         border-radius: 20px;
         overflow: hidden;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        width: 100%;
       }
       
       .signup-image {
@@ -71,31 +76,91 @@
         justify-content: center;
         padding: 40px;
         color: white;
+        position: relative;
+        min-height: 500px;
+      }
+      
+      .signup-image::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.2);
+      }
+      
+      .signup-image-content {
+        position: relative;
+        z-index: 1;
+        text-align: center;
+        width: 100%;
+      }
+      
+      .signup-image-content .features-list {
+        text-align: left;
+        max-width: 400px;
+        margin: 30px auto 0;
+      }
+
+      .feature-item {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 12px 15px;
+        border-radius: 8px;
+        backdrop-filter: blur(5px);
+        transition: transform 0.3s ease;
+        margin-bottom: 10px;
+      }
+
+      .feature-item:hover {
+        transform: translateX(5px);
+      }
+
+      @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+      }
+
+      .bi-joystick {
+        animation: pulse 2s infinite;
       }
       
       .signup-image img {
         max-width: 100%;
         height: auto;
+        max-height: 250px;
+        object-fit: contain;
+        margin-bottom: 30px;
+        border-radius: 10px;
       }
       
       .signup-image h2 {
         font-weight: 800;
         margin-bottom: 20px;
+        font-size: 2rem;
       }
       
       .signup-image p {
         opacity: 0.9;
+        font-size: 1.1rem;
+        max-width: 500px;
+        margin: 0 auto;
       }
       
       .signup-form {
-        padding: 60px;
+        padding: 50px;
         background-color: white;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
       }
       
       .signup-form h2 {
         color: var(--primary);
         margin-bottom: 30px;
         position: relative;
+        font-size: 1.8rem;
       }
       
       .signup-form h2:after {
@@ -121,6 +186,11 @@
       .form-control:focus {
         border-color: var(--primary);
         box-shadow: 0 0 0 0.25rem rgba(67, 97, 238, 0.25);
+      }
+      
+      textarea.form-control {
+        height: auto;
+        min-height: 100px;
       }
       
       .btn-signup {
@@ -240,28 +310,222 @@
         text-decoration: underline;
       }
       
-      /* Trainer specific fields */
-      .trainer-fields {
+      /* Role-specific fields */
+      .role-fields {
+        display: none;
+        transition: all 0.3s ease;
+      }
+      
+      /* File upload styling */
+      .file-upload {
+        position: relative;
+        overflow: hidden;
+        display: inline-block;
+        width: 100%;
+      }
+      
+      .file-upload-btn {
+        border: 2px dashed var(--gray-light);
+        border-radius: 10px;
+        padding: 30px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        width: 100%;
+      }
+      
+      .file-upload-btn:hover {
+        border-color: var(--primary);
+        background-color: var(--primary-light);
+      }
+      
+      .file-upload-input {
+        position: absolute;
+        left: 0;
+        top: 0;
+        opacity: 0;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+      }
+      
+      /* Sports selection */
+      .sport-selection {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+      
+      .sport-checkbox {
+        display: none;
+      }
+      
+      .sport-label {
+        padding: 8px 15px;
+        border-radius: 50px;
+        background-color: var(--gray-light);
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+      
+      .sport-checkbox:checked + .sport-label {
+        background-color: var(--primary);
+        color: white;
+      }
+      
+      /* Location button */
+      .location-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px 15px;
+        background-color: var(--primary-light);
+        color: var(--primary);
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-bottom: 20px;
+      }
+      
+      .location-btn:hover {
+        background-color: var(--primary);
+        color: white;
+      }
+      
+      .location-btn i {
+        margin-right: 5px;
+      }
+      
+      .location-wrapper {
+        display: flex;
+        gap: 10px;
+      }
+      
+      .location-wrapper .form-control {
+        flex: 1;
+      }
+
+      /* Location Toast */
+      .location-toast {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: white;
+        padding: 12px 20px;
+        border-radius: 8px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        z-index: 9999;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .location-toast.show {
+        opacity: 1;
+      }
+
+      .toast-success {
+        border-left: 4px solid var(--success);
+      }
+
+      .toast-danger {
+        border-left: 4px solid var(--danger);
+      }
+
+      .toast-icon i {
+        font-size: 1.2rem;
+      }
+
+      .toast-success .toast-icon i {
+        color: var(--success);
+      }
+
+      .toast-danger .toast-icon i {
+        color: var(--danger);
+      }
+
+      /* Spinner for location button */
+      .bi-gear-fill.spin {
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+
+      /* Google Maps autocomplete dropdown styling */
+      .pac-container {
+        z-index: 1051 !important;
+        font-family: 'Poppins', sans-serif;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        border: none;
+        margin-top: 5px;
+      }
+
+      .pac-item {
+        padding: 8px 15px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+      }
+
+      .pac-item:hover {
+        background-color: var(--primary-light);
+      }
+
+      .pac-item-query {
+        color: var(--primary);
+        font-size: 1rem;
+      }
+
+      .pac-icon {
         display: none;
       }
       
       @media (max-width: 991.98px) {
         .signup-image {
-          padding: 60px 40px;
+          min-height: 400px;
+          padding: 30px;
         }
         
         .signup-form {
-          padding: 40px;
+          padding: 30px;
         }
       }
       
       @media (max-width: 767.98px) {
         .signup-container {
-          padding: 40px 20px;
+          padding: 15px;
+        }
+        
+        .signup-image {
+          min-height: 300px;
+        }
+        
+        .signup-image h2 {
+          font-size: 1.5rem;
+        }
+        
+        .signup-image p {
+          font-size: 1rem;
         }
         
         .signup-form {
-          padding: 30px;
+          padding: 25px;
+        }
+        
+        .signup-form h2 {
+          font-size: 1.5rem;
+        }
+        
+        .location-wrapper {
+          flex-direction: column;
         }
       }
     </style>
@@ -272,10 +536,26 @@
         <!-- Signup Image Section -->
         <div class="col-lg-6 d-none d-lg-block">
           <div class="signup-image">
-            <div>
-              <img src="https://images.unsplash.com/photo-1547347298-4074fc3086f0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Sports" class="img-fluid mb-4">
+            <div class="signup-image-content">
+              <div class="mb-4">
+                <i class="bi bi-joystick" style="font-size: 3rem; color: var(--accent);"></i>
+              </div>
               <h2>Join SportConnect Today</h2>
-              <p>Connect with players, trainers, and sports enthusiasts in your area. Join the community and take your game to the next level.</p>
+              <p class="mb-4">Become part of the largest sports community in your area and unlock amazing features:</p>
+              <div class="features-list">
+                <div class="feature-item">
+                  <i class="bi bi-star-fill me-2"></i> Find the best playing venues
+                </div>
+                <div class="feature-item">
+                  <i class="bi bi-chat-dots-fill me-2"></i> Connect with like-minded players
+                </div>
+                <div class="feature-item">
+                  <i class="bi bi-award-fill me-2"></i> Improve your skills with coaches
+                </div>
+                <div class="feature-item">
+                  <i class="bi bi-graph-up-arrow me-2"></i> Grow your sports business
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -287,14 +567,17 @@
             
             <!-- User Type Toggle -->
             <div class="user-type-toggle">
-              <input type="radio" id="user-signup" name="user-type" checked>
-              <label for="user-signup">Player</label>
-              <input type="radio" id="trainer-signup" name="user-type">
-              <label for="trainer-signup">Trainer</label>
+              <input type="radio" id="player-signup" name="user-type" checked>
+              <label for="player-signup">Player</label>
+              <input type="radio" id="coach-signup" name="user-type">
+              <label for="coach-signup">Coach</label>
+              <input type="radio" id="turf-signup" name="user-type">
+              <label for="turf-signup">Turf Admin</label>
             </div>
             
             <!-- Signup Form -->
             <form>
+              <!-- Common Fields -->
               <div class="row">
                 <div class="col-md-6">
                   <input type="text" class="form-control" placeholder="First Name" required>
@@ -304,14 +587,98 @@
                 </div>
               </div>
               <input type="email" class="form-control" placeholder="Email Address" required>
+              <input type="tel" class="form-control" placeholder="Phone Number" required>
               <input type="password" class="form-control" placeholder="Password" required>
               <input type="password" class="form-control" placeholder="Confirm Password" required>
               
-              <!-- Trainer Specific Fields (Hidden by default) -->
-              <div class="trainer-fields" id="trainerFields">
+              <!-- Player Specific Fields -->
+              <div class="role-fields" id="playerFields">
+                <div class="location-wrapper">
+                  <input type="text" class="form-control" id="playerLocation" placeholder="Enter your location" required>
+                  <button type="button" class="location-btn" id="playerLocationBtn">
+                    <i class="bi bi-geo-alt-fill"></i> Current
+                  </button>
+                </div>
+                <select class="form-control" required>
+                  <option value="" disabled selected>Select Your Primary Sport</option>
+                  <option value="football">Football</option>
+                  <option value="cricket">Cricket</option>
+                  <option value="tennis">Tennis</option>
+                  <option value="badminton">Badminton</option>
+                  <option value="basketball">Basketball</option>
+                  <option value="volleyball">Volleyball</option>
+                </select>
+                <input type="text" class="form-control mt-3" placeholder="Skill Level (Beginner/Intermediate/Advanced)">
+              </div>
+              
+              <!-- Coach Specific Fields -->
+              <div class="role-fields" id="coachFields">
+                <div class="location-wrapper">
+                  <input type="text" class="form-control" id="coachLocation" placeholder="Enter your coaching location" required>
+                  <button type="button" class="location-btn" id="coachLocationBtn">
+                    <i class="bi bi-geo-alt-fill"></i> Current
+                  </button>
+                </div>
                 <input type="text" class="form-control" placeholder="Certification">
                 <input type="text" class="form-control" placeholder="Specialization">
                 <textarea class="form-control" placeholder="Experience (Years)" rows="2"></textarea>
+                <div class="file-upload">
+                  <label class="file-upload-btn">
+                    <span id="certificate-text"><i class="bi bi-cloud-arrow-up"></i> Upload Certification Documents</span>
+                    <input type="file" class="file-upload-input" id="certificate-upload" accept=".pdf,.jpg,.png">
+                  </label>
+                </div>
+                <small class="text-muted">Upload your coaching certification for verification (PDF, JPG, PNG)</small>
+              </div>
+              
+              <!-- Turf Admin Specific Fields -->
+              <div class="role-fields" id="turfFields">
+                <input type="text" class="form-control" placeholder="Turf Name" required>
+                <textarea class="form-control" placeholder="Turf Address" rows="2" required></textarea>
+                <div class="location-wrapper">
+                  <input type="text" class="form-control" id="turfLocation" placeholder="Enter turf location" required>
+                  <button type="button" class="location-btn" id="turfLocationBtn">
+                    <i class="bi bi-geo-alt-fill"></i> Current
+                  </button>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-md-6">
+                    <input type="text" class="form-control" placeholder="Pin Code" required>
+                  </div>
+                </div>
+                <input type="text" class="form-control" placeholder="Contact Person">
+                <input type="tel" class="form-control" placeholder="Business Phone Number">
+                
+                <div class="mb-3">
+                  <label class="form-label">Available Sports</label>
+                  <div class="sport-selection">
+                    <input type="checkbox" id="football" class="sport-checkbox">
+                    <label for="football" class="sport-label">Football</label>
+                    
+                    <input type="checkbox" id="cricket" class="sport-checkbox">
+                    <label for="cricket" class="sport-label">Cricket</label>
+                    
+                    <input type="checkbox" id="tennis" class="sport-checkbox">
+                    <label for="tennis" class="sport-label">Tennis</label>
+                    
+                    <input type="checkbox" id="badminton" class="sport-checkbox">
+                    <label for="badminton" class="sport-label">Badminton</label>
+                    
+                    <input type="checkbox" id="basketball" class="sport-checkbox">
+                    <label for="basketball" class="sport-label">Basketball</label>
+                    
+                    <input type="checkbox" id="volleyball" class="sport-checkbox">
+                    <label for="volleyball" class="sport-label">Volleyball</label>
+                  </div>
+                </div>
+                
+                <div class="file-upload">
+                  <label class="file-upload-btn">
+                    <span id="turf-image-text"><i class="bi bi-cloud-arrow-up"></i> Upload Turf Images</span>
+                    <input type="file" class="file-upload-input" id="turf-image-upload" accept=".jpg,.png" multiple>
+                  </label>
+                </div>
+                <small class="text-muted">Upload images of your turf facility (JPG, PNG)</small>
               </div>
               
               <div class="form-check mb-3">
@@ -350,16 +717,164 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>
-      // Toggle between user and trainer signup
+      // Toggle between user types
       document.querySelectorAll('.user-type-toggle input').forEach(input => {
         input.addEventListener('change', function() {
-          const trainerFields = document.getElementById('trainerFields');
-          if (this.id === 'trainer-signup') {
-            trainerFields.style.display = 'block';
-          } else {
-            trainerFields.style.display = 'none';
+          // Hide all role-specific fields
+          document.querySelectorAll('.role-fields').forEach(field => {
+            field.style.display = 'none';
+          });
+          
+          // Show fields for selected role
+          if (this.id === 'player-signup') {
+            document.getElementById('playerFields').style.display = 'block';
+          } else if (this.id === 'coach-signup') {
+            document.getElementById('coachFields').style.display = 'block';
+          } else if (this.id === 'turf-signup') {
+            document.getElementById('turfFields').style.display = 'block';
           }
         });
+      });
+      
+      // Initialize with player fields visible
+      document.getElementById('playerFields').style.display = 'block';
+      
+      // File upload display
+      document.getElementById('certificate-upload').addEventListener('change', function(e) {
+        const files = e.target.files;
+        if (files.length > 0) {
+          document.getElementById('certificate-text').innerHTML = 
+            `<i class="bi bi-check-circle-fill text-success"></i> ${files.length} file(s) selected`;
+        }
+      });
+      
+      document.getElementById('turf-image-upload').addEventListener('change', function(e) {
+        const files = e.target.files;
+        if (files.length > 0) {
+          document.getElementById('turf-image-text').innerHTML = 
+            `<i class="bi bi-check-circle-fill text-success"></i> ${files.length} image(s) selected`;
+        }
+      });
+
+      // Google Maps Location Functionality
+      function initLocationAutocomplete(inputId, buttonId) {
+        const input = document.getElementById(inputId);
+        const autocomplete = new google.maps.places.Autocomplete(input, {
+          types: ['(regions)'],
+          fields: ['geometry', 'name', 'formatted_address']
+        });
+
+        document.getElementById(buttonId).addEventListener('click', () => {
+          if (navigator.geolocation) {
+            // Show loading state
+            const button = document.getElementById(buttonId);
+            const originalHtml = button.innerHTML;
+            button.innerHTML = '<i class="bi bi-gear-fill spin"></i> Detecting...';
+            button.disabled = true;
+
+            navigator.geolocation.getCurrentPosition(
+              (position) => {
+                const geocoder = new google.maps.Geocoder();
+                const latlng = {
+                  lat: position.coords.latitude,
+                  lng: position.coords.longitude
+                };
+
+                geocoder.geocode({ location: latlng }, (results, status) => {
+                  button.innerHTML = originalHtml;
+                  button.disabled = false;
+
+                  if (status === "OK" && results[0]) {
+                    // Try to find locality or neighborhood first
+                    let area = '';
+                    const addressComponents = results[0].address_components;
+                    
+                    const componentTypes = [
+                      'locality',
+                      'neighborhood',
+                      'sublocality',
+                      'administrative_area_level_2',
+                      'administrative_area_level_1'
+                    ];
+
+                    for (let type of componentTypes) {
+                      const component = addressComponents.find(c => c.types.includes(type));
+                      if (component) {
+                        area = component.long_name;
+                        break;
+                      }
+                    }
+
+                    input.value = area || results[0].formatted_address;
+                    
+                    // Show success message
+                    showLocationToast('Location detected successfully!', 'success');
+                    
+                    // Optional: Open Google Maps in new tab
+                    const mapUrl = `https://www.google.com/maps/@${latlng.lat},${latlng.lng},15z`;
+                    console.log('Google Maps URL:', mapUrl);
+                  } else {
+                    console.error("Geocoder failed due to: " + status);
+                    showLocationToast('Could not determine address. Please enter manually.', 'danger');
+                  }
+                });
+              },
+              (error) => {
+                button.innerHTML = originalHtml;
+                button.disabled = false;
+                console.error("Error getting location:", error);
+                showLocationToast('Location access denied. Please enter manually.', 'danger');
+              },
+              {
+                enableHighAccuracy: true,
+                timeout: 5000,
+                maximumAge: 0
+              }
+            );
+          } else {
+            showLocationToast('Geolocation not supported. Please enter manually.', 'danger');
+          }
+        });
+
+        // Show selected place on map when user selects from dropdown
+        autocomplete.addListener('place_changed', () => {
+          const place = autocomplete.getPlace();
+          if (place.geometry) {
+            console.log('Selected place:', place);
+          }
+        });
+      }
+
+      // Show toast notification
+      function showLocationToast(message, type) {
+        const toast = document.createElement('div');
+        toast.className = `location-toast toast-${type}`;
+        toast.innerHTML = `
+          <div class="toast-icon">
+            <i class="bi ${type === 'success' ? 'bi-check-circle-fill' : 'bi-exclamation-circle-fill'}"></i>
+          </div>
+          <div class="toast-message">${message}</div>
+        `;
+        
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+          toast.classList.add('show');
+        }, 10);
+        
+        setTimeout(() => {
+          toast.classList.remove('show');
+          setTimeout(() => {
+            document.body.removeChild(toast);
+          }, 300);
+        }, 3000);
+      }
+
+      // Initialize location autocomplete when DOM is loaded
+      document.addEventListener('DOMContentLoaded', function() {
+        initLocationAutocomplete('playerLocation', 'playerLocationBtn');
+        initLocationAutocomplete('coachLocation', 'coachLocationBtn');
+        initLocationAutocomplete('turfLocation', 'turfLocationBtn');
       });
     </script>
   </body>

@@ -476,6 +476,15 @@
       }
       
       /* Sports Cards */
+
+      .sport-card .card-img-top {
+  height: 200px;
+  width: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+  display: block;
+}
+
       .sports-section {
         padding: 100px 0;
         background-color: white;
@@ -658,6 +667,21 @@
         transform: translateY(-3px);
         box-shadow: 0 8px 20px rgba(67, 97, 238, 0.3);
       }
+
+      .sport-card .card-img-top {
+  height: 200px;
+  width: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+  display: block; /* Add this */
+}
+
+.card-img-top {
+  background-color: #f5f5f5;
+  min-height: 200px;
+}
+
+      
       
       /* Features Section */
       .features-section {
@@ -1398,28 +1422,34 @@
             </div>
           </div>
 
-          <!-- Football Card -->
-          <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
-            <div class="sport-card">
-              <img src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" class="card-img-top" alt="Football">
-              <div class="card-body">
-                <h5 class="card-title">Football</h5>
-                <div class="rating">
-                  <i class="bi bi-star-fill"></i>
-                  <i class="bi bi-star-fill"></i>
-                  <i class="bi bi-star-fill"></i>
-                  <i class="bi bi-star-fill"></i>
-                  <i class="bi bi-star"></i>
-                  <span class="ms-2">(4.0)</span>
-                </div>
-                <p class="card-text">
-                  Find teams and football events in your city. Play, compete and have fun.
-                </p>
-                <span class="event-date">Next Event: Sep 10, 2025</span>
-                <a href="#" class="btn btn-join">Join Now</a>
-              </div>
-            </div>
-          </div>
+
+             
+        
+           <!-- Badminton Card -->
+<div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+  <div class="sport-card">
+    <img src="https://images.unsplash.com/photo-1547347298-4074fc3086f0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" 
+     class="card-img-top" 
+     alt="Badminton players">
+    <div class="card-body">
+      <h5 class="card-title">Badminton</h5>
+      <div class="rating">
+        <i class="bi bi-star-fill"></i>
+        <i class="bi bi-star-fill"></i>
+        <i class="bi bi-star-fill"></i>
+        <i class="bi bi-star-fill"></i>
+        <i class="bi bi-star-fill"></i>
+        <span class="ms-2">(4.9)</span>
+      </div>
+      <p class="card-text">
+        Enjoy competitive badminton matches and training sessions at top facilities in Bhimavaram.
+      </p>
+      <span class="event-date">Next Event: Sep 5, 2025</span>
+      <a href="#" class="btn btn-join">Join Now</a>
+    </div>
+  </div>
+</div>
+
 
           <!-- Basketball Card -->
           <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
@@ -1448,94 +1478,108 @@
     </section>
 
     <!-- Locations Section -->
-    <section class="locations-section" id="locations">
-      <div class="container">
-        <h2 class="text-center section-title" data-aos="fade-up">Sports Locations</h2>
-        <div class="row g-4">
-          <!-- City Stadium -->
-          <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
-            <div class="location-card">
-              <div class="map-container">
-                <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3806.452906912598!2d78.47445141494994!3d17.441568504404066!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bcb91bc1ae81c4f%3A0x693db967d30e6ee0!2sRajiv%20Gandhi%20International%20Cricket%20Stadium!5e0!3m2!1sen!2sin!4v1689000000000!5m2!1sen!2sin"
-                  allowfullscreen=""
-                  loading="lazy"
-                  referrerpolicy="no-referrer-when-downgrade"
-                  title="City Stadium Map"
-                ></iframe>
-              </div>
-              <div class="card-body">
-                <h5 class="card-title">City Stadium</h5>
-                <p class="card-text">
-                  A hub for major sports events in the city with world-class facilities.
-                </p>
-                <a
-                  href="https://goo.gl/maps/2D6WxCZz9iY7wLvz6"
-                  target="_blank"
-                  class="btn btn-location"
-                >
-                  <i class="bi bi-geo-alt-fill me-2"></i> View on Map
-                </a>
-              </div>
-            </div>
+<section class="locations-section" id="locations">
+  <div class="container">
+    <h2 class="text-center section-title" data-aos="fade-up">Sports Locations in Bhimavaram</h2>
+    <div class="row g-4">
+      <!-- Elite Sports Arena -->
+      <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+        <div class="location-card">
+          <div class="map-container">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3820.123456789012!2d81.53345678901234!3d16.543456789012345!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTbCsDMyJzM2LjQiTiA4McKwMzInMDQuNSJF!5e0!3m2!1sen!2sin!4v1689000000000!5m2!1sen!2sin"
+              allowfullscreen=""
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              title="Elite Sports Arena Map"
+            ></iframe>
           </div>
-
-          <!-- Community Sports Ground -->
-          <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
-            <div class="location-card">
-              <div class="map-container">
-                <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3806.1!2d78.5!3d17.4!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTfCsDI0JzQxLjAiTiA3OMKwMzAnNDMuNiJF!5e0!3m2!1sen!2sin!4v1689000000000!5m2!1sen!2sin"
-                  allowfullscreen=""
-                  loading="lazy"
-                  referrerpolicy="no-referrer-when-downgrade"
-                  title="Community Sports Ground Map"
-                ></iframe>
-              </div>
-              <div class="card-body">
-                <h5 class="card-title">Community Sports Ground</h5>
-                <p class="card-text">
-                  Perfect for local matches and practice sessions with multiple courts.
-                </p>
-                <a
-                  href="#"
-                  class="btn btn-location"
-                >
-                  <i class="bi bi-geo-alt-fill me-2"></i> View on Map
-                </a>
-              </div>
+          <div class="card-body">
+            <h5 class="card-title">Elite Sports Arena</h5>
+            <p class="card-text">
+              Premium indoor facility for badminton, cricket, volleyball and football. Open 24 hours.
+            </p>
+            <div class="mb-2">
+              <i class="bi bi-star-fill text-warning"></i>
+              <span class="ms-1">4.6 (51 reviews)</span>
             </div>
-          </div>
-
-          <!-- Indoor Sports Arena -->
-          <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
-            <div class="location-card">
-              <div class="map-container">
-                <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3807.0!2d78.5!3d17.45!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTfCsDI3JzEwLjAiTiA3OMKwMzAnMzIuNiJF!5e0!3m2!1sen!2sin!4v1689000000000!5m2!1sen!2sin"
-                  allowfullscreen=""
-                  loading="lazy"
-                  referrerpolicy="no-referrer-when-downgrade"
-                  title="Indoor Sports Arena Map"
-                ></iframe>
-              </div>
-              <div class="card-body">
-                <h5 class="card-title">Indoor Sports Arena</h5>
-                <p class="card-text">
-                  Host to indoor games and activities year-round with AC facilities.
-                </p>
-                <a
-                  href="#"
-                  class="btn btn-location"
-                >
-                  <i class="bi bi-geo-alt-fill me-2"></i> View on Map
-                </a>
-              </div>
-            </div>
+            <a
+              href="https://goo.gl/maps/example"
+              target="_blank"
+              class="btn btn-location"
+            >
+              <i class="bi bi-geo-alt-fill me-2"></i> Youth Club Road
+            </a>
           </div>
         </div>
       </div>
-    </section>
+
+      <!-- PRO Badminton Academy -->
+      <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+        <div class="location-card">
+          <div class="map-container">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3820.234567890123!2d81.53456789012345!3d16.544567890123456!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTbCsDMyJzQwLjQiTiA4McKwMzInMDkuNSJF!5e0!3m2!1sen!2sin!4v1689000000000!5m2!1sen!2sin"
+              allowfullscreen=""
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              title="PRO Badminton Academy Map"
+            ></iframe>
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">PRO Badminton Academy</h5>
+            <p class="card-text">
+              Best badminton court in Bhimavaram with professional coaching. Opens at 5 AM.
+            </p>
+            <div class="mb-2">
+              <i class="bi bi-star-fill text-warning"></i>
+              <span class="ms-1">4.9 (140 reviews)</span>
+            </div>
+            <a
+              href="https://goo.gl/maps/example"
+              target="_blank"
+              class="btn btn-location"
+            >
+              <i class="bi bi-geo-alt-fill me-2"></i> Opp. Bhavan's Road
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- DNR Ground -->
+      <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+        <div class="location-card">
+          <div class="map-container">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3820.3456789012345!2d81.53567890123456!3d16.545678901234567!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTbCsDMyJzQ0LjQiTiA4McKwMzInMTQuNSJF!5e0!3m2!1sen!2sin!4v1689000000000!5m2!1sen!2sin"
+              allowfullscreen=""
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              title="DNR Ground Map"
+            ></iframe>
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">DNR Ground</h5>
+            <p class="card-text">
+              Large outdoor stadium for cricket, basketball and volleyball. Opens at 5 AM.
+            </p>
+            <div class="mb-2">
+              <i class="bi bi-star-fill text-warning"></i>
+              <span class="ms-1">4.4 (2,600 reviews)</span>
+            </div>
+            <a
+              href="https://goo.gl/maps/example"
+              target="_blank"
+              class="btn btn-location"
+            >
+              <i class="bi bi-geo-alt-fill me-2"></i> GGP9+X2V
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
     <!-- Features Section -->
     <section class="features-section" id="features">
@@ -1735,7 +1779,7 @@
               <ul>
                 <li>
                   <i class="bi bi-geo-alt-fill"></i>
-                  <span>srkr engineering college, bhimavaram, India</span>
+                  <span>SRKR ENGINEERING COLLEGE, BHEL ROAD, BHIMAVARAM, India</span>
                 </li>
                 <li>
                   <i class="bi bi-telephone-fill"></i>
@@ -1747,7 +1791,7 @@
                 </li>
                 <li>
                   <i class="bi bi-clock-fill"></i>
-                  <span>Monday - Saturday: 9:00 AM - 6:00 PM</span>
+                  <span>Monday - Sunday: 6:00 AM - 7:00 PM</span>
                 </li>
               </ul>
             </div>
