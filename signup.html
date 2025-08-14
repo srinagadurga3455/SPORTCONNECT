@@ -624,31 +624,34 @@
             </div>
             
             <!-- Signup Form -->
-            <form>
+            <form id="signupForm" method="POST" action="signup.php">
+              <!-- Hidden user type field -->
+              <input type="hidden" name="user_type" id="userTypeField" value="player">
+              
               <!-- Common Fields -->
               <div class="row">
                 <div class="col-md-6">
-                  <input type="text" class="form-control" placeholder="First Name" required>
+                  <input type="text" class="form-control" name="first_name" placeholder="First Name" required>
                 </div>
                 <div class="col-md-6">
-                  <input type="text" class="form-control" placeholder="Last Name" required>
+                  <input type="text" class="form-control" name="last_name" placeholder="Last Name" required>
                 </div>
               </div>
-              <input type="email" class="form-control" placeholder="Email Address" required>
-              <input type="tel" class="form-control" placeholder="Phone Number" required>
-              <input type="password" class="form-control" placeholder="Password" required>
-              <input type="password" class="form-control" placeholder="Confirm Password" required>
+              <input type="email" class="form-control" name="email" placeholder="Email Address" required>
+              <input type="tel" class="form-control" name="phone" placeholder="Phone Number" required>
+              <input type="password" class="form-control" name="password" placeholder="Password" required>
+              <input type="password" class="form-control" name="confirm_password" placeholder="Confirm Password" required>
               
               <!-- Player Specific Fields -->
               <div class="role-fields" id="playerFields">
                 <div class="location-wrapper">
-                  <input type="text" class="form-control" id="playerLocation" placeholder="Enter your location" required>
+                  <input type="text" class="form-control" id="playerLocation" name="player_location" placeholder="Enter your location" required>
                   <button type="button" class="location-btn" id="playerLocationBtn">
                     <i class="bi bi-geo-alt-fill"></i> Current
                     <div class="accuracy-indicator" id="playerAccuracyIndicator"></div>
                   </button>
                 </div>
-                <select class="form-control" required>
+                <select class="form-control" name="player_sport" required>
                   <option value="" disabled selected>Select Your Primary Sport</option>
                   <option value="football">Football</option>
                   <option value="cricket">Cricket</option>
@@ -657,21 +660,21 @@
                   <option value="basketball">Basketball</option>
                   <option value="volleyball">Volleyball</option>
                 </select>
-                <input type="text" class="form-control mt-3" placeholder="Skill Level (Beginner/Intermediate/Advanced)">
+                <input type="text" class="form-control mt-3" name="player_skill" placeholder="Skill Level (Beginner/Intermediate/Advanced)">
               </div>
               
               <!-- Coach Specific Fields -->
               <div class="role-fields" id="coachFields">
                 <div class="location-wrapper">
-                  <input type="text" class="form-control" id="coachLocation" placeholder="Enter your coaching location" required>
+                  <input type="text" class="form-control" id="coachLocation" name="coach_location" placeholder="Enter your coaching location" required>
                   <button type="button" class="location-btn" id="coachLocationBtn">
                     <i class="bi bi-geo-alt-fill"></i> Current
                     <div class="accuracy-indicator" id="coachAccuracyIndicator"></div>
                   </button>
                 </div>
-                <input type="text" class="form-control" placeholder="Certification">
-                <input type="text" class="form-control" placeholder="Specialization">
-                <textarea class="form-control" placeholder="Experience (Years)" rows="2"></textarea>
+                <input type="text" class="form-control" name="coach_certification" placeholder="Certification">
+                <input type="text" class="form-control" name="coach_specialization" placeholder="Specialization">
+                <textarea class="form-control" name="coach_experience" placeholder="Experience (Years)" rows="2"></textarea>
                 <div class="file-upload">
                   <label class="file-upload-btn">
                     <span id="certificate-text"><i class="bi bi-cloud-arrow-up"></i> Upload Certification Documents</span>
@@ -683,10 +686,10 @@
               
               <!-- Turf Admin Specific Fields -->
               <div class="role-fields" id="turfFields">
-                <input type="text" class="form-control" placeholder="Turf Name" required>
-                <textarea class="form-control" placeholder="Turf Address" rows="2" required></textarea>
+                <input type="text" class="form-control" name="turf_name" placeholder="Turf Name" required>
+                <textarea class="form-control" name="turf_address" placeholder="Turf Address" rows="2" required></textarea>
                 <div class="location-wrapper">
-                  <input type="text" class="form-control" id="turfLocation" placeholder="Enter turf location" required>
+                  <input type="text" class="form-control" id="turfLocation" name="turf_location" placeholder="Enter turf location" required>
                   <button type="button" class="location-btn" id="turfLocationBtn">
                     <i class="bi bi-geo-alt-fill"></i> Current
                     <div class="accuracy-indicator" id="turfAccuracyIndicator"></div>
@@ -694,31 +697,31 @@
                 </div>
                 <div class="row mb-3">
                   <div class="col-md-6">
-                    <input type="text" class="form-control" placeholder="Pin Code" required>
+                    <input type="text" class="form-control" name="turf_pin_code" placeholder="Pin Code" required>
                   </div>
                 </div>
-                <input type="text" class="form-control" placeholder="Contact Person">
-                <input type="tel" class="form-control" placeholder="Business Phone Number">
+                <input type="text" class="form-control" name="turf_contact_person" placeholder="Contact Person">
+                <input type="tel" class="form-control" name="turf_business_phone" placeholder="Business Phone Number">
                 
                 <div class="mb-3">
                   <label class="form-label">Available Sports</label>
                   <div class="sport-selection">
-                    <input type="checkbox" id="football" class="sport-checkbox">
+                    <input type="checkbox" id="football" name="turf_sports[]" value="football" class="sport-checkbox">
                     <label for="football" class="sport-label">Football</label>
                     
-                    <input type="checkbox" id="cricket" class="sport-checkbox">
+                    <input type="checkbox" id="cricket" name="turf_sports[]" value="cricket" class="sport-checkbox">
                     <label for="cricket" class="sport-label">Cricket</label>
                     
-                    <input type="checkbox" id="tennis" class="sport-checkbox">
+                    <input type="checkbox" id="tennis" name="turf_sports[]" value="tennis" class="sport-checkbox">
                     <label for="tennis" class="sport-label">Tennis</label>
                     
-                    <input type="checkbox" id="badminton" class="sport-checkbox">
+                    <input type="checkbox" id="badminton" name="turf_sports[]" value="badminton" class="sport-checkbox">
                     <label for="badminton" class="sport-label">Badminton</label>
                     
-                    <input type="checkbox" id="basketball" class="sport-checkbox">
+                    <input type="checkbox" id="basketball" name="turf_sports[]" value="basketball" class="sport-checkbox">
                     <label for="basketball" class="sport-label">Basketball</label>
                     
-                    <input type="checkbox" id="volleyball" class="sport-checkbox">
+                    <input type="checkbox" id="volleyball" name="turf_sports[]" value="volleyball" class="sport-checkbox">
                     <label for="volleyball" class="sport-label">Volleyball</label>
                   </div>
                 </div>
@@ -776,13 +779,16 @@
             field.style.display = 'none';
           });
           
-          // Show fields for selected role
+          // Show fields for selected role and update hidden field
           if (this.id === 'player-signup') {
             document.getElementById('playerFields').style.display = 'block';
+            document.getElementById('userTypeField').value = 'player';
           } else if (this.id === 'coach-signup') {
             document.getElementById('coachFields').style.display = 'block';
+            document.getElementById('userTypeField').value = 'coach';
           } else if (this.id === 'turf-signup') {
             document.getElementById('turfFields').style.display = 'block';
+            document.getElementById('userTypeField').value = 'turf';
           }
         });
       });
@@ -1149,6 +1155,158 @@
           }
         }, 35000); // Wait 35 seconds before setting up fallback
       });
+
+      // Form submission handling
+      document.getElementById('signupForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Get the current user type
+        const userType = document.getElementById('userTypeField').value;
+        
+        // Validate form based on user type
+        if (!validateForm(userType)) {
+          return;
+        }
+        
+        // Show loading state
+        const submitBtn = document.querySelector('.btn-signup');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="bi bi-gear-fill spin"></i> Creating Account...';
+        submitBtn.disabled = true;
+        
+        // Submit form via AJAX
+        const formData = new FormData(this);
+        
+        fetch('signup.php', {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            showToast(data.message, 'success');
+            
+            // Store user data in sessionStorage for dashboard access
+            const userData = data.user_data;
+            
+            // Store in sessionStorage
+            sessionStorage.setItem('userData', JSON.stringify(userData));
+            
+            // Redirect to appropriate dashboard based on user type
+            setTimeout(() => {
+              let dashboardUrl = '';
+              
+              switch(userType) {
+                case 'player':
+                  dashboardUrl = 'player-dashboard.html';
+                  break;
+                case 'coach':
+                  dashboardUrl = 'coach-dashboard.html';
+                  break;
+                case 'turf':
+                  dashboardUrl = 'turf-dashboard.html';
+                  break;
+                default:
+                  dashboardUrl = 'login.html';
+              }
+              
+              window.location.href = dashboardUrl;
+            }, 2000);
+          } else {
+            showToast(data.message, 'error');
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          showToast('An error occurred. Please try again.', 'error');
+        })
+        .finally(() => {
+          // Reset button state
+          submitBtn.innerHTML = originalText;
+          submitBtn.disabled = false;
+        });
+      });
+      
+      // Form validation function
+      function validateForm(userType) {
+        const requiredFields = ['first_name', 'last_name', 'email', 'phone', 'password', 'confirm_password'];
+        
+        // Check common required fields
+        for (let field of requiredFields) {
+          const input = document.querySelector(`[name="${field}"]`);
+          if (!input.value.trim()) {
+            showToast(`Please fill in ${field.replace('_', ' ')}`, 'error');
+            input.focus();
+            return false;
+          }
+        }
+        
+        // Check password confirmation
+        const password = document.querySelector('[name="password"]').value;
+        const confirmPassword = document.querySelector('[name="confirm_password"]').value;
+        if (password !== confirmPassword) {
+          showToast('Passwords do not match', 'error');
+          return false;
+        }
+        
+        // Check role-specific required fields
+        if (userType === 'player') {
+          const playerLocation = document.querySelector('[name="player_location"]').value;
+          const playerSport = document.querySelector('[name="player_sport"]').value;
+          
+          if (!playerLocation.trim()) {
+            showToast('Please enter your location', 'error');
+            return false;
+          }
+          if (!playerSport) {
+            showToast('Please select your primary sport', 'error');
+            return false;
+          }
+        } else if (userType === 'coach') {
+          const coachLocation = document.querySelector('[name="coach_location"]').value;
+          if (!coachLocation.trim()) {
+            showToast('Please enter your coaching location', 'error');
+            return false;
+          }
+        } else if (userType === 'turf') {
+          const turfName = document.querySelector('[name="turf_name"]').value;
+          const turfAddress = document.querySelector('[name="turf_address"]').value;
+          const turfLocation = document.querySelector('[name="turf_location"]').value;
+          const pinCode = document.querySelector('[name="turf_pin_code"]').value;
+          
+          if (!turfName.trim() || !turfAddress.trim() || !turfLocation.trim() || !pinCode.trim()) {
+            showToast('Please fill in all required turf fields', 'error');
+            return false;
+          }
+        }
+        
+        return true;
+      }
+      
+      // Enhanced toast notification function
+      function showToast(message, type) {
+        const toast = document.createElement('div');
+        toast.className = `location-toast toast-${type === 'error' ? 'danger' : type}`;
+        toast.innerHTML = `
+          <div class="toast-icon">
+            <i class="bi ${type === 'success' ? 'bi-check-circle-fill' : 'bi-exclamation-circle-fill'}"></i>
+          </div>
+          <div class="toast-message">${message}</div>
+        `;
+        
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+          toast.classList.add('show');
+        }, 10);
+        
+        setTimeout(() => {
+          toast.classList.remove('show');
+          setTimeout(() => {
+            document.body.removeChild(toast);
+          }, 300);
+        }, 4000);
+      }
 
       // Enhanced Fallback location functionality when Google Maps is unavailable
       function setupFallbackLocation() {

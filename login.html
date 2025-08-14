@@ -405,19 +405,22 @@
             </div>
             
             <!-- Login Form -->
-            <form>
+            <form id="loginForm" action="login.php" method="POST">
+              <!-- Hidden user type field -->
+              <input type="hidden" name="user_type" id="userTypeField" value="player">
+              
               <div class="mb-3">
-                <input type="text" class="form-control" id="phone-number" placeholder="Phone Number" required>
+                <input type="text" class="form-control" id="phone-number" name="phone" placeholder="Phone Number" required>
               </div>
               <div class="mb-3">
-                <input type="password" class="form-control" id="password" placeholder="Password" required>
+                <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
               </div>
               <div class="d-flex justify-content-between mb-3">
                 <div class="form-check">
                   <input class="form-check-input" type="checkbox" id="remember-me">
                   <label class="form-check-label" for="remember-me">Remember me</label>
                 </div>
-                <a href="#" class="text-decoration-none">Forgot password?</a>
+                <a href="forgot-password.html" class="text-decoration-none">Forgot password?</a>
               </div>
               
               <!-- Location Access Section -->
@@ -479,6 +482,15 @@
       document.querySelectorAll('.user-type-toggle input').forEach(input => {
         input.addEventListener('change', function() {
           console.log(this.id + ' selected');
+          
+          // Update hidden user type field
+          if (this.id === 'player-login') {
+            document.getElementById('userTypeField').value = 'player';
+          } else if (this.id === 'coach-login') {
+            document.getElementById('userTypeField').value = 'coach';
+          } else if (this.id === 'turf-login') {
+            document.getElementById('userTypeField').value = 'turf';
+          }
         });
       });
 
@@ -818,6 +830,132 @@
             }
           });
         }
+      }
+
+      // Form submission handling
+      document.getElementById('loginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Get the current user type
+        const userType = document.getElementById('userTypeField').value;
+        
+        // Validate form
+        if (!validateLoginForm()) {
+          return;
+        }
+        
+        // Show loading state
+        const submitBtn = document.querySelector('.btn-login');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="bi bi-gear-fill spin"></i> Logging in...';
+        submitBtn.disabled = true;
+        
+        // Submit form via AJAX
+        const formData = new FormData(this);
+        
+        fetch('login.php', {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            showToast(data.message, 'success');
+            
+            // Store user data in sessionStorage for dashboard access
+            const userData = {
+              first_name: data.user_name.split(' ')[0],
+              last_name: data.user_name.split(' ')[1] || '',
+              user_type: data.user_type,
+              phone: document.querySelector('[name="phone"]').value,
+              location: document.getElementById('location-address')?.textContent || 'Not specified'
+            };
+            
+            // Add user type specific data based on response
+            if (data.user_type === 'player') {
+              userData.sport = data.sport || 'Football';
+              userData.skill_level = data.skill_level || 'Intermediate';
+            } else if (data.user_type === 'coach') {
+              userData.certification = data.certification || 'Not specified';
+              userData.specialization = data.specialization || 'Not specified';
+              userData.experience = data.experience || 'Not specified';
+            } else if (data.user_type === 'turf') {
+              userData.turf_name = data.turf_name || 'Not specified';
+              userData.turf_address = data.turf_address || 'Not specified';
+              userData.pin_code = data.pin_code || 'Not specified';
+              userData.contact_person = data.contact_person || 'Not specified';
+              userData.business_phone = data.business_phone || 'Not specified';
+              userData.available_sports = data.available_sports || 'football, cricket, tennis';
+            }
+            
+            sessionStorage.setItem('userData', JSON.stringify(userData));
+            
+            // Redirect to appropriate dashboard
+            setTimeout(() => {
+              if (data.redirect_url) {
+                window.location.href = data.redirect_url;
+              } else {
+                window.location.href = 'index.html';
+              }
+            }, 2000);
+          } else {
+            showToast(data.message, 'error');
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          showToast('An error occurred. Please try again.', 'error');
+        })
+        .finally(() => {
+          // Reset button state
+          submitBtn.innerHTML = originalText;
+          submitBtn.disabled = false;
+        });
+      });
+      
+      // Form validation function
+      function validateLoginForm() {
+        const phone = document.querySelector('[name="phone"]').value;
+        const password = document.querySelector('[name="password"]').value;
+        
+        if (!phone.trim()) {
+          showToast('Please enter your phone number', 'error');
+          return false;
+        }
+        
+        if (!password.trim()) {
+          showToast('Please enter your password', 'error');
+          return false;
+        }
+        
+        return true;
+      }
+      
+      // Enhanced toast notification function for login
+      function showToast(message, type) {
+        const toast = document.createElement('div');
+        toast.className = `location-toast toast-${type === 'error' ? 'danger' : type}`;
+        toast.innerHTML = `
+          <div class="toast-icon">
+            <i class="bi ${type === 'success' ? 'bi-check-circle-fill' : 'bi-exclamation-circle-fill'}"></i>
+          </div>
+          <div class="toast-message">${message}</div>
+        `;
+        
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+          toast.classList.add('show');
+        }, 10);
+        
+        setTimeout(() => {
+          toast.classList.remove('show');
+          setTimeout(() => {
+            if (document.body.contains(toast)) {
+              document.body.removeChild(toast);
+            }
+          }, 300);
+        }, 4000);
       }
 
       // Simple toast notification function for login page
