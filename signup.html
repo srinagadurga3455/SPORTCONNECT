@@ -18,7 +18,7 @@
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
     <!-- Google Maps API -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg&libraries=places"></script>
     
     <style>
       :root {
@@ -387,6 +387,7 @@
         cursor: pointer;
         transition: all 0.3s ease;
         margin-bottom: 20px;
+        position: relative;
       }
       
       .location-btn:hover {
@@ -396,6 +397,53 @@
       
       .location-btn i {
         margin-right: 5px;
+      }
+
+      /* Accuracy indicator */
+      .accuracy-indicator {
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        background: var(--success);
+        color: white;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.7rem;
+        font-weight: bold;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .accuracy-indicator.show {
+        opacity: 1;
+      }
+
+      .accuracy-indicator.high {
+        background: var(--success);
+      }
+
+      .accuracy-indicator.medium {
+        background: var(--warning);
+      }
+
+      .accuracy-indicator.low {
+        background: var(--danger);
+      }
+
+      /* Accuracy indicator animation */
+      @keyframes accuracyPulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+      }
+
+      .accuracy-indicator.show {
+        opacity: 1;
+        animation: accuracyPulse 0.5s ease-in-out;
       }
       
       .location-wrapper {
@@ -597,6 +645,7 @@
                   <input type="text" class="form-control" id="playerLocation" placeholder="Enter your location" required>
                   <button type="button" class="location-btn" id="playerLocationBtn">
                     <i class="bi bi-geo-alt-fill"></i> Current
+                    <div class="accuracy-indicator" id="playerAccuracyIndicator"></div>
                   </button>
                 </div>
                 <select class="form-control" required>
@@ -617,6 +666,7 @@
                   <input type="text" class="form-control" id="coachLocation" placeholder="Enter your coaching location" required>
                   <button type="button" class="location-btn" id="coachLocationBtn">
                     <i class="bi bi-geo-alt-fill"></i> Current
+                    <div class="accuracy-indicator" id="coachAccuracyIndicator"></div>
                   </button>
                 </div>
                 <input type="text" class="form-control" placeholder="Certification">
@@ -639,6 +689,7 @@
                   <input type="text" class="form-control" id="turfLocation" placeholder="Enter turf location" required>
                   <button type="button" class="location-btn" id="turfLocationBtn">
                     <i class="bi bi-geo-alt-fill"></i> Current
+                    <div class="accuracy-indicator" id="turfAccuracyIndicator"></div>
                   </button>
                 </div>
                 <div class="row mb-3">
@@ -756,93 +807,241 @@
         }
       });
 
-      // Google Maps Location Functionality
+      // Enhanced Google Maps Location Functionality with High Accuracy
       function initLocationAutocomplete(inputId, buttonId) {
-        const input = document.getElementById(inputId);
-        const autocomplete = new google.maps.places.Autocomplete(input, {
-          types: ['(regions)'],
-          fields: ['geometry', 'name', 'formatted_address']
-        });
+        // Check if Google Maps API is loaded
+        if (typeof google === 'undefined' || typeof google.maps === 'undefined') {
+          console.error('Google Maps API not loaded');
+          return;
+        }
 
-        document.getElementById(buttonId).addEventListener('click', () => {
-          if (navigator.geolocation) {
-            // Show loading state
-            const button = document.getElementById(buttonId);
-            const originalHtml = button.innerHTML;
-            button.innerHTML = '<i class="bi bi-gear-fill spin"></i> Detecting...';
-            button.disabled = true;
+        try {
+          const input = document.getElementById(inputId);
+          const button = document.getElementById(buttonId);
+          
+          if (!input || !button) {
+            console.error('Input or button element not found');
+            return;
+          }
 
-            navigator.geolocation.getCurrentPosition(
-              (position) => {
-                const geocoder = new google.maps.Geocoder();
-                const latlng = {
-                  lat: position.coords.latitude,
-                  lng: position.coords.longitude
-                };
+          const autocomplete = new google.maps.places.Autocomplete(input, {
+            types: ['(regions)', 'geocode'],
+            fields: ['geometry', 'name', 'formatted_address', 'address_components']
+          });
 
-                geocoder.geocode({ location: latlng }, (results, status) => {
-                  button.innerHTML = originalHtml;
-                  button.disabled = false;
+          button.addEventListener('click', () => {
+            if (navigator.geolocation) {
+              // Show loading state with accuracy indicator
+              const originalHtml = button.innerHTML;
+              button.innerHTML = '<i class="bi bi-gear-fill spin"></i> Detecting with High Accuracy...';
+              button.disabled = true;
 
-                  if (status === "OK" && results[0]) {
-                    // Try to find locality or neighborhood first
-                    let area = '';
-                    const addressComponents = results[0].address_components;
-                    
-                    const componentTypes = [
-                      'locality',
-                      'neighborhood',
-                      'sublocality',
-                      'administrative_area_level_2',
-                      'administrative_area_level_1'
-                    ];
-
-                    for (let type of componentTypes) {
-                      const component = addressComponents.find(c => c.types.includes(type));
-                      if (component) {
-                        area = component.long_name;
-                        break;
-                      }
-                    }
-
-                    input.value = area || results[0].formatted_address;
-                    
-                    // Show success message
-                    showLocationToast('Location detected successfully!', 'success');
-                    
-                    // Optional: Open Google Maps in new tab
-                    const mapUrl = `https://www.google.com/maps/@${latlng.lat},${latlng.lng},15z`;
-                    console.log('Google Maps URL:', mapUrl);
-                  } else {
-                    console.error("Geocoder failed due to: " + status);
-                    showLocationToast('Could not determine address. Please enter manually.', 'danger');
-                  }
-                });
-              },
-              (error) => {
-                button.innerHTML = originalHtml;
-                button.disabled = false;
-                console.error("Error getting location:", error);
-                showLocationToast('Location access denied. Please enter manually.', 'danger');
-              },
-              {
+              // First attempt with high accuracy
+              const highAccuracyOptions = {
                 enableHighAccuracy: true,
-                timeout: 5000,
-                maximumAge: 0
-              }
-            );
-          } else {
-            showLocationToast('Geolocation not supported. Please enter manually.', 'danger');
-          }
-        });
+                timeout: 15000,
+                maximumAge: 0 // Always get fresh position
+              };
+              
+              // Second attempt with lower accuracy if high accuracy fails
+              const lowAccuracyOptions = {
+                enableHighAccuracy: false,
+                timeout: 10000,
+                maximumAge: 300000 // 5 minutes
+              };
 
-        // Show selected place on map when user selects from dropdown
-        autocomplete.addListener('place_changed', () => {
-          const place = autocomplete.getPlace();
-          if (place.geometry) {
-            console.log('Selected place:', place);
-          }
-        });
+              // Try high accuracy first
+              navigator.geolocation.getCurrentPosition(
+                (position) => {
+                  // Success callback with high accuracy
+                  const latitude = position.coords.latitude;
+                  const longitude = position.coords.longitude;
+                  const accuracy = position.coords.accuracy;
+                  const timestamp = position.timestamp;
+                  
+                  console.log('High accuracy location obtained:', {
+                    lat: latitude,
+                    lng: longitude,
+                    accuracy: accuracy + ' meters',
+                    timestamp: new Date(timestamp).toLocaleString()
+                  });
+
+                  try {
+                    const geocoder = new google.maps.Geocoder();
+                    const latlng = { lat: latitude, lng: longitude };
+
+                    geocoder.geocode({ location: latlng }, (results, status) => {
+                      button.innerHTML = originalHtml;
+                      button.disabled = false;
+
+                      if (status === "OK" && results[0]) {
+                        // Try to find locality or neighborhood first
+                        let area = '';
+                        const addressComponents = results[0].address_components;
+                        
+                        const componentTypes = [
+                          'locality',
+                          'neighborhood',
+                          'sublocality',
+                          'administrative_area_level_2',
+                          'administrative_area_level_1'
+                        ];
+
+                        for (let type of componentTypes) {
+                          const component = addressComponents.find(c => c.types.includes(type));
+                          if (component) {
+                            area = component.long_name;
+                            break;
+                          }
+                        }
+
+                        input.value = area || results[0].formatted_address;
+                        
+                        // Show success message with accuracy info
+                        showLocationToast(`Location detected with ${Math.round(accuracy)}m accuracy!`, 'success');
+                        
+                        // Update accuracy indicator
+                        updateAccuracyIndicator(buttonId, accuracy, 'success');
+                        
+                        // Optional: Open Google Maps in new tab
+                        const mapUrl = `https://www.google.com/maps/@${latlng.lat},${latlng.lng},15z`;
+                        console.log('Google Maps URL:', mapUrl);
+                      } else {
+                        console.error("Geocoder failed due to: " + status);
+                        // Still show coordinates if geocoding fails
+                        input.value = `Lat: ${latitude.toFixed(6)}, Lng: ${longitude.toFixed(6)} (±${Math.round(accuracy)}m)`;
+                        showLocationToast(`Coordinates detected with ${Math.round(accuracy)}m accuracy!`, 'success');
+                      }
+                    });
+                  } catch (error) {
+                    console.error('Error in geocoding:', error);
+                    button.innerHTML = originalHtml;
+                    button.disabled = false;
+                    // Fallback to coordinates
+                    input.value = `Lat: ${latitude.toFixed(6)}, Lng: ${longitude.toFixed(6)} (±${Math.round(accuracy)}m)`;
+                    showLocationToast(`Coordinates detected with ${Math.round(accuracy)}m accuracy!`, 'success');
+                  }
+                },
+                (error) => {
+                  // High accuracy failed, try low accuracy
+                  console.log('High accuracy failed, trying low accuracy...');
+                  
+                  navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                      // Success callback with low accuracy
+                      const latitude = position.coords.latitude;
+                      const longitude = position.coords.longitude;
+                      const accuracy = position.coords.accuracy;
+                      
+                      console.log('Low accuracy location obtained:', {
+                        lat: latitude,
+                        lng: longitude,
+                        accuracy: accuracy + ' meters'
+                      });
+
+                      try {
+                        const geocoder = new google.maps.Geocoder();
+                        const latlng = { lat: latitude, lng: longitude };
+
+                        geocoder.geocode({ location: latlng }, (results, status) => {
+                          button.innerHTML = originalHtml;
+                          button.disabled = false;
+
+                          if (status === "OK" && results[0]) {
+                            // Try to find locality or neighborhood first
+                            let area = '';
+                            const addressComponents = results[0].address_components;
+                            
+                            const componentTypes = [
+                              'locality',
+                              'neighborhood',
+                              'sublocality',
+                              'administrative_area_level_2',
+                              'administrative_area_level_1'
+                            ];
+
+                            for (let type of componentTypes) {
+                              const component = addressComponents.find(c => c.types.includes(type));
+                              if (component) {
+                                area = component.long_name;
+                                break;
+                              }
+                            }
+
+                            input.value = area || results[0].formatted_address;
+                            
+                            showLocationToast(`Location detected with ${Math.round(accuracy)}m accuracy (lower precision)`, 'warning');
+                        
+                        // Update accuracy indicator
+                        updateAccuracyIndicator(buttonId, accuracy, 'warning');
+                          } else {
+                            console.error("Geocoder failed due to: " + status);
+                            input.value = `Lat: ${latitude.toFixed(6)}, Lng: ${longitude.toFixed(6)} (±${Math.round(accuracy)}m)`;
+                            showLocationToast(`Coordinates detected with ${Math.round(accuracy)}m accuracy (lower precision)`, 'warning');
+                            
+                            // Update accuracy indicator
+                            updateAccuracyIndicator(buttonId, accuracy, 'warning');
+                          }
+                        });
+                      } catch (error) {
+                        console.error('Error in geocoding:', error);
+                        button.innerHTML = originalHtml;
+                        button.disabled = false;
+                        input.value = `Lat: ${latitude.toFixed(6)}, Lng: ${longitude.toFixed(6)} (±${Math.round(accuracy)}m)`;
+                        showLocationToast(`Coordinates detected with ${Math.round(accuracy)}m accuracy (lower precision)`, 'warning');
+                        
+                        // Update accuracy indicator
+                        updateAccuracyIndicator(buttonId, accuracy, 'warning');
+                      }
+                    },
+                    (lowAccuracyError) => {
+                      // Both attempts failed
+                      button.innerHTML = originalHtml;
+                      button.disabled = false;
+                      console.error("Both high and low accuracy location attempts failed:", lowAccuracyError);
+                      
+                      let errorMessage = 'Location access denied. Please enter manually.';
+                      switch(lowAccuracyError.code) {
+                        case lowAccuracyError.PERMISSION_DENIED:
+                          errorMessage = 'Location access denied. Please enable location services.';
+                          break;
+                        case lowAccuracyError.POSITION_UNAVAILABLE:
+                          errorMessage = 'Location unavailable. Please enter manually.';
+                          break;
+                        case lowAccuracyError.TIMEOUT:
+                          errorMessage = 'Location request timed out. Please try again.';
+                          break;
+                        default:
+                          errorMessage = 'An unknown error occurred. Please try again.';
+                      }
+                      
+                      showLocationToast(errorMessage, 'danger');
+                    },
+                    lowAccuracyOptions
+                  );
+                },
+                highAccuracyOptions
+              );
+            } else {
+              showLocationToast('Geolocation not supported. Please enter manually.', 'danger');
+            }
+          });
+
+          // Show selected place on map when user selects from dropdown
+          autocomplete.addListener('place_changed', () => {
+            try {
+              const place = autocomplete.getPlace();
+              if (place.geometry) {
+                console.log('Selected place:', place);
+                // You can add additional functionality here like showing coordinates
+              }
+            } catch (error) {
+              console.error('Error handling place selection:', error);
+            }
+          });
+        } catch (error) {
+          console.error('Error initializing location autocomplete:', error);
+        }
       }
 
       // Show toast notification
@@ -870,12 +1069,188 @@
         }, 3000);
       }
 
+      // Update accuracy indicator
+      function updateAccuracyIndicator(buttonId, accuracy, type = 'success') {
+        const indicator = document.getElementById(buttonId.replace('Btn', 'AccuracyIndicator'));
+        if (indicator) {
+          // Determine accuracy level
+          let accuracyLevel = 'high';
+          let accuracyText = 'H';
+          
+          if (accuracy <= 10) {
+            accuracyLevel = 'high';
+            accuracyText = 'H';
+          } else if (accuracy <= 50) {
+            accuracyLevel = 'medium';
+            accuracyText = 'M';
+          } else {
+            accuracyLevel = 'low';
+            accuracyText = 'L';
+          }
+          
+          // Update indicator
+          indicator.className = `accuracy-indicator ${accuracyLevel} show`;
+          indicator.textContent = accuracyText;
+          indicator.title = `Accuracy: ±${Math.round(accuracy)} meters`;
+          
+          // Auto-hide after 5 seconds
+          setTimeout(() => {
+            indicator.classList.remove('show');
+          }, 5000);
+        }
+      }
+
+      // Check if Google Maps API is loaded
+      function checkGoogleMapsLoaded() {
+        return typeof google !== 'undefined' && typeof google.maps !== 'undefined';
+      }
+
+      // Wait for Google Maps API to load
+      function waitForGoogleMaps(callback, maxAttempts = 30) {
+        let attempts = 0;
+        const checkInterval = setInterval(() => {
+          attempts++;
+          if (checkGoogleMapsLoaded()) {
+            clearInterval(checkInterval);
+            callback();
+          } else if (attempts >= maxAttempts) {
+            clearInterval(checkInterval);
+            console.error('Google Maps API failed to load after 30 seconds');
+            // Disable all location buttons if API fails to load
+            const locationBtns = document.querySelectorAll('.location-btn');
+            locationBtns.forEach(btn => {
+              btn.disabled = true;
+              btn.innerHTML = '<i class="bi bi-exclamation-triangle"></i> Maps Unavailable';
+              btn.style.backgroundColor = 'var(--gray)';
+            });
+          }
+        }, 1000);
+      }
+
       // Initialize location autocomplete when DOM is loaded
       document.addEventListener('DOMContentLoaded', function() {
-        initLocationAutocomplete('playerLocation', 'playerLocationBtn');
-        initLocationAutocomplete('coachLocation', 'coachLocationBtn');
-        initLocationAutocomplete('turfLocation', 'turfLocationBtn');
+        // Wait for Google Maps API to load before initializing
+        waitForGoogleMaps(() => {
+          console.log('Google Maps API loaded successfully');
+          try {
+            initLocationAutocomplete('playerLocation', 'playerLocationBtn');
+            initLocationAutocomplete('coachLocation', 'coachLocationBtn');
+            initLocationAutocomplete('turfLocation', 'turfLocationBtn');
+          } catch (error) {
+            console.error('Error initializing location features:', error);
+          }
+        });
+
+        // Fallback: If Google Maps fails, still allow manual location input
+        setTimeout(() => {
+          if (!checkGoogleMapsLoaded()) {
+            console.log('Setting up fallback location functionality');
+            setupFallbackLocation();
+          }
+        }, 35000); // Wait 35 seconds before setting up fallback
       });
+
+      // Enhanced Fallback location functionality when Google Maps is unavailable
+      function setupFallbackLocation() {
+        const locationBtns = document.querySelectorAll('.location-btn');
+        locationBtns.forEach(btn => {
+          btn.addEventListener('click', function() {
+            if (navigator.geolocation) {
+              const originalHtml = this.innerHTML;
+              this.innerHTML = '<i class="bi bi-gear-fill spin"></i> Detecting with High Accuracy...';
+              this.disabled = true;
+
+              // First attempt with high accuracy
+              const highAccuracyOptions = {
+                enableHighAccuracy: true,
+                timeout: 15000,
+                maximumAge: 0
+              };
+              
+              // Second attempt with lower accuracy if high accuracy fails
+              const lowAccuracyOptions = {
+                enableHighAccuracy: false,
+                timeout: 10000,
+                maximumAge: 300000
+              };
+
+              // Try high accuracy first
+              navigator.geolocation.getCurrentPosition(
+                (position) => {
+                  this.innerHTML = originalHtml;
+                  this.disabled = false;
+                  
+                  const latitude = position.coords.latitude;
+                  const longitude = position.coords.longitude;
+                  const accuracy = position.coords.accuracy;
+                  
+                  // Find the corresponding input field
+                  const inputId = this.id.replace('Btn', '');
+                  const input = document.getElementById(inputId);
+                  if (input) {
+                    input.value = `Lat: ${latitude.toFixed(6)}, Lng: ${longitude.toFixed(6)} (±${Math.round(accuracy)}m)`;
+                    showLocationToast(`Coordinates detected with ${Math.round(accuracy)}m accuracy! (Maps unavailable)`, 'success');
+                    
+                    // Update accuracy indicator
+                    updateAccuracyIndicator(this.id, accuracy, 'success');
+                  }
+                },
+                (error) => {
+                  // High accuracy failed, try low accuracy
+                  console.log('High accuracy failed, trying low accuracy...');
+                  
+                  navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                      this.innerHTML = originalHtml;
+                      this.disabled = false;
+                      
+                      const latitude = position.coords.latitude;
+                      const longitude = position.coords.longitude;
+                      const accuracy = position.coords.accuracy;
+                      
+                      // Find the corresponding input field
+                      const inputId = this.id.replace('Btn', '');
+                      const input = document.getElementById(inputId);
+                      if (input) {
+                        input.value = `Lat: ${latitude.toFixed(6)}, Lng: ${longitude.toFixed(6)} (±${Math.round(accuracy)}m)`;
+                        showLocationToast(`Coordinates detected with ${Math.round(accuracy)}m accuracy (lower precision, Maps unavailable)`, 'warning');
+                        
+                        // Update accuracy indicator
+                        updateAccuracyIndicator(this.id, accuracy, 'warning');
+                      }
+                    },
+                    (lowAccuracyError) => {
+                      this.innerHTML = originalHtml;
+                      this.disabled = false;
+                      
+                      let errorMessage = 'Location access denied';
+                      switch(lowAccuracyError.code) {
+                        case lowAccuracyError.PERMISSION_DENIED:
+                          errorMessage = 'Location access denied. Please enable location services.';
+                          break;
+                        case lowAccuracyError.POSITION_UNAVAILABLE:
+                          errorMessage = 'Location unavailable. Please try again.';
+                          break;
+                        case lowAccuracyError.TIMEOUT:
+                          errorMessage = 'Location request timed out. Please try again.';
+                          break;
+                        default:
+                          errorMessage = 'An unknown error occurred. Please try again.';
+                      }
+                      
+                      showLocationToast(errorMessage, 'danger');
+                    },
+                    lowAccuracyOptions
+                  );
+                },
+                highAccuracyOptions
+              );
+            } else {
+              showLocationToast('Geolocation not supported', 'danger');
+            }
+          });
+        });
+      }
     </script>
   </body>
 </html>

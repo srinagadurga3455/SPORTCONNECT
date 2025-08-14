@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
     
     <!-- Google Maps API -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg&libraries=places"></script>
     
     <style>
       :root {
@@ -482,104 +482,401 @@
         });
       });
 
-      // Location Access Functionality
+      // Enhanced Location Access Functionality with High Accuracy
       document.getElementById('get-location').addEventListener('click', function() {
+        // Check if Google Maps API is loaded
+        if (typeof google === 'undefined' || typeof google.maps === 'undefined') {
+          alert('Google Maps is still loading. Please wait a moment and try again.');
+          return;
+        }
+
         if (navigator.geolocation) {
-          // Show loading state
-          this.innerHTML = '<i class="bi bi-arrow-clockwise"></i> Detecting...';
+          // Show loading state with accuracy indicator
+          this.innerHTML = '<i class="bi bi-arrow-clockwise"></i> Detecting with High Accuracy...';
           this.disabled = true;
           
+          // First attempt with high accuracy
+          const highAccuracyOptions = {
+            enableHighAccuracy: true,
+            timeout: 15000,
+            maximumAge: 0 // Always get fresh position
+          };
+          
+          // Second attempt with lower accuracy if high accuracy fails
+          const lowAccuracyOptions = {
+            enableHighAccuracy: false,
+            timeout: 10000,
+            maximumAge: 300000 // 5 minutes
+          };
+          
+          // Try high accuracy first
           navigator.geolocation.getCurrentPosition(
             function(position) {
-              // Success callback
+              // Success callback with high accuracy
               const latitude = position.coords.latitude;
               const longitude = position.coords.longitude;
+              const accuracy = position.coords.accuracy;
+              const timestamp = position.timestamp;
+              
+              console.log('High accuracy location obtained:', {
+                lat: latitude,
+                lng: longitude,
+                accuracy: accuracy + ' meters',
+                timestamp: new Date(timestamp).toLocaleString()
+              });
               
               // Update hidden fields
               document.getElementById('latitude').value = latitude;
               document.getElementById('longitude').value = longitude;
               
-              // Initialize Google Map
-              initMap(latitude, longitude);
-              
-              // Reverse geocode to get address
-              getAddressFromCoordinates(latitude, longitude);
-              
-              // Update button
-              const locationBtn = document.getElementById('get-location');
-              locationBtn.innerHTML = '<i class="bi bi-check-circle-fill"></i> Allowed';
-              locationBtn.style.backgroundColor = 'var(--success)';
-              locationBtn.disabled = true;
-              
-              // Show map and details
-              document.getElementById('map').style.display = 'block';
-              document.getElementById('location-details').style.display = 'block';
+              try {
+                // Initialize Google Map
+                initMap(latitude, longitude);
+                
+                // Reverse geocode to get address
+                getAddressFromCoordinates(latitude, longitude);
+                
+                // Update button with accuracy info
+                const locationBtn = document.getElementById('get-location');
+                locationBtn.innerHTML = `<i class="bi bi-check-circle-fill"></i> Located (±${Math.round(accuracy)}m)`;
+                locationBtn.style.backgroundColor = 'var(--success)';
+                locationBtn.disabled = true;
+                
+                // Show map and details
+                document.getElementById('map').style.display = 'block';
+                document.getElementById('location-details').style.display = 'block';
+                
+                // Show accuracy information
+                showLocationToast(`Location detected with ${Math.round(accuracy)}m accuracy!`, 'success');
+                
+              } catch (error) {
+                console.error('Error initializing map:', error);
+                // Still show success but without map
+                const locationBtn = document.getElementById('get-location');
+                locationBtn.innerHTML = `<i class="bi bi-check-circle-fill"></i> Located (±${Math.round(accuracy)}m)`;
+                locationBtn.style.backgroundColor = 'var(--success)';
+                locationBtn.disabled = true;
+                
+                // Show location details without map
+                document.getElementById('location-details').style.display = 'block';
+                document.getElementById('location-address').textContent = `Lat: ${latitude.toFixed(6)}, Lng: ${longitude.toFixed(6)} (±${Math.round(accuracy)}m)`;
+                
+                showLocationToast(`Location detected with ${Math.round(accuracy)}m accuracy!`, 'success');
+              }
             },
             function(error) {
-              // Error callback
-              console.error('Error getting location:', error);
-              const locationBtn = document.getElementById('get-location');
-              locationBtn.innerHTML = '<i class="bi bi-x-circle-fill"></i> Failed';
-              locationBtn.style.backgroundColor = 'var(--danger)';
+              // High accuracy failed, try low accuracy
+              console.log('High accuracy failed, trying low accuracy...');
               
-              setTimeout(() => {
-                locationBtn.innerHTML = '<i class="bi bi-crosshair"></i> Allow';
-                locationBtn.style.backgroundColor = 'var(--primary)';
-                locationBtn.disabled = false;
-              }, 2000);
-              
-              alert('Unable to retrieve your location. Please enable location services and try again.');
+              navigator.geolocation.getCurrentPosition(
+                function(position) {
+                  // Success callback with low accuracy
+                  const latitude = position.coords.latitude;
+                  const longitude = position.coords.longitude;
+                  const accuracy = position.coords.accuracy;
+                  
+                  console.log('Low accuracy location obtained:', {
+                    lat: latitude,
+                    lng: longitude,
+                    accuracy: accuracy + ' meters'
+                  });
+                  
+                  // Update hidden fields
+                  document.getElementById('latitude').value = latitude;
+                  document.getElementById('longitude').value = longitude;
+                  
+                  try {
+                    // Initialize Google Map
+                    initMap(latitude, longitude);
+                    
+                    // Reverse geocode to get address
+                    getAddressFromCoordinates(latitude, longitude);
+                    
+                    // Update button with accuracy info
+                    const locationBtn = document.getElementById('get-location');
+                    locationBtn.innerHTML = `<i class="bi bi-check-circle-fill"></i> Located (±${Math.round(accuracy)}m)`;
+                    locationBtn.style.backgroundColor = 'var(--warning)';
+                    locationBtn.disabled = true;
+                    
+                    // Show map and details
+                    document.getElementById('map').style.display = 'block';
+                    document.getElementById('location-details').style.display = 'block';
+                    
+                    showLocationToast(`Location detected with ${Math.round(accuracy)}m accuracy (lower precision)`, 'warning');
+                    
+                  } catch (error) {
+                    console.error('Error initializing map:', error);
+                    const locationBtn = document.getElementById('get-location');
+                    locationBtn.innerHTML = `<i class="bi bi-check-circle-fill"></i> Located (±${Math.round(accuracy)}m)`;
+                    locationBtn.style.backgroundColor = 'var(--warning)';
+                    locationBtn.disabled = true;
+                    
+                    document.getElementById('location-details').style.display = 'block';
+                    document.getElementById('location-address').textContent = `Lat: ${latitude.toFixed(6)}, Lng: ${longitude.toFixed(6)} (±${Math.round(accuracy)}m)`;
+                    
+                    showLocationToast(`Location detected with ${Math.round(accuracy)}m accuracy (lower precision)`, 'warning');
+                  }
+                },
+                function(lowAccuracyError) {
+                  // Both attempts failed
+                  console.error('Both high and low accuracy location attempts failed:', lowAccuracyError);
+                  const locationBtn = document.getElementById('get-location');
+                  let errorMessage = 'Unable to retrieve your location.';
+                  
+                  switch(lowAccuracyError.code) {
+                    case lowAccuracyError.PERMISSION_DENIED:
+                      errorMessage = 'Location access denied. Please enable location services in your browser.';
+                      break;
+                    case lowAccuracyError.POSITION_UNAVAILABLE:
+                      errorMessage = 'Location information unavailable. Please try again.';
+                      break;
+                    case lowAccuracyError.TIMEOUT:
+                      errorMessage = 'Location request timed out. Please try again.';
+                      break;
+                    default:
+                      errorMessage = 'An unknown error occurred. Please try again.';
+                  }
+                  
+                  locationBtn.innerHTML = '<i class="bi bi-x-circle-fill"></i> Failed';
+                  locationBtn.style.backgroundColor = 'var(--danger)';
+                  
+                  setTimeout(() => {
+                    locationBtn.innerHTML = '<i class="bi bi-crosshair"></i> Allow';
+                    locationBtn.style.backgroundColor = 'var(--primary)';
+                    locationBtn.disabled = false;
+                  }, 3000);
+                  
+                  showLocationToast(errorMessage, 'danger');
+                },
+                lowAccuracyOptions
+              );
             },
-            {
-              enableHighAccuracy: true,
-              timeout: 5000,
-              maximumAge: 0
-            }
+            highAccuracyOptions
           );
         } else {
-          alert('Geolocation is not supported by your browser.');
+          showLocationToast('Geolocation is not supported by your browser. Please use a modern browser.', 'danger');
         }
       });
 
       // Initialize Google Map
       function initMap(lat, lng) {
-        const map = new google.maps.Map(document.getElementById('map'), {
-          center: { lat: lat, lng: lng },
-          zoom: 15,
-          mapTypeControl: false,
-          streetViewControl: false
-        });
-        
-        new google.maps.Marker({
-          position: { lat: lat, lng: lng },
-          map: map,
-          title: 'Your Location'
-        });
+        try {
+          const mapElement = document.getElementById('map');
+          if (!mapElement) {
+            throw new Error('Map element not found');
+          }
+          
+          const map = new google.maps.Map(mapElement, {
+            center: { lat: lat, lng: lng },
+            zoom: 15,
+            mapTypeControl: false,
+            streetViewControl: false,
+            fullscreenControl: false,
+            zoomControl: true,
+            gestureHandling: 'cooperative'
+          });
+          
+          new google.maps.Marker({
+            position: { lat: lat, lng: lng },
+            map: map,
+            title: 'Your Location',
+            animation: google.maps.Animation.DROP
+          });
+          
+          return map;
+        } catch (error) {
+          console.error('Error initializing map:', error);
+          throw error;
+        }
       }
 
       // Get address from coordinates using Google Maps Geocoding API
       function getAddressFromCoordinates(lat, lng) {
-        const geocoder = new google.maps.Geocoder();
-        const latlng = { lat: lat, lng: lng };
-        
-        geocoder.geocode({ location: latlng }, (results, status) => {
-          if (status === 'OK') {
-            if (results[0]) {
-              document.getElementById('location-address').textContent = results[0].formatted_address;
+        try {
+          const geocoder = new google.maps.Geocoder();
+          const latlng = { lat: lat, lng: lng };
+          
+          geocoder.geocode({ location: latlng }, (results, status) => {
+            if (status === 'OK') {
+              if (results[0]) {
+                const addressElement = document.getElementById('location-address');
+                if (addressElement) {
+                  addressElement.textContent = results[0].formatted_address;
+                }
+              } else {
+                const addressElement = document.getElementById('location-address');
+                if (addressElement) {
+                  addressElement.textContent = 'Address not found';
+                }
+              }
             } else {
-              document.getElementById('location-address').textContent = 'Address not found';
+              console.error('Geocoder failed:', status);
+              const addressElement = document.getElementById('location-address');
+              if (addressElement) {
+                addressElement.textContent = 'Could not determine address';
+              }
             }
-          } else {
-            document.getElementById('location-address').textContent = 'Geocoder failed: ' + status;
+          });
+        } catch (error) {
+          console.error('Error in geocoding:', error);
+          const addressElement = document.getElementById('location-address');
+          if (addressElement) {
+            addressElement.textContent = 'Error getting address';
           }
-        });
+        }
+      }
+
+      // Check if Google Maps API is loaded
+      function checkGoogleMapsLoaded() {
+        return typeof google !== 'undefined' && typeof google.maps !== 'undefined';
+      }
+
+      // Wait for Google Maps API to load
+      function waitForGoogleMaps(callback, maxAttempts = 30) {
+        let attempts = 0;
+        const checkInterval = setInterval(() => {
+          attempts++;
+          if (checkGoogleMapsLoaded()) {
+            clearInterval(checkInterval);
+            callback();
+          } else if (attempts >= maxAttempts) {
+            clearInterval(checkInterval);
+            console.error('Google Maps API failed to load after 30 seconds');
+            // Disable location button if API fails to load
+            const locationBtn = document.getElementById('get-location');
+            if (locationBtn) {
+              locationBtn.disabled = true;
+              locationBtn.innerHTML = '<i class="bi bi-exclamation-triangle"></i> Maps Unavailable';
+              locationBtn.style.backgroundColor = 'var(--gray)';
+            }
+          }
+        }, 1000);
       }
 
       // Check if location was previously allowed
       window.addEventListener('load', function() {
-        // You might want to check localStorage or cookies for previously allowed location
-        // For now, we'll just initialize the map if needed
+        // Wait for Google Maps API to load
+        waitForGoogleMaps(() => {
+          console.log('Google Maps API loaded successfully');
+          // You might want to check localStorage or cookies for previously allowed location
+        });
+
+        // Fallback: If Google Maps fails, still allow basic location functionality
+        setTimeout(() => {
+          if (!checkGoogleMapsLoaded()) {
+            console.log('Setting up fallback location functionality');
+            setupFallbackLocation();
+          }
+        }, 35000); // Wait 35 seconds before setting up fallback
       });
+
+      // Fallback location functionality when Google Maps is unavailable
+      function setupFallbackLocation() {
+        const locationBtn = document.getElementById('get-location');
+        if (locationBtn) {
+          locationBtn.addEventListener('click', function() {
+            if (navigator.geolocation) {
+              this.innerHTML = '<i class="bi bi-arrow-clockwise"></i> Detecting...';
+              this.disabled = true;
+
+              navigator.geolocation.getCurrentPosition(
+                (position) => {
+                  const latitude = position.coords.latitude;
+                  const longitude = position.coords.longitude;
+                  
+                  // Update hidden fields
+                  document.getElementById('latitude').value = latitude;
+                  document.getElementById('longitude').value = longitude;
+                  
+                  // Update button
+                  this.innerHTML = '<i class="bi bi-check-circle-fill"></i> Allowed';
+                  this.style.backgroundColor = 'var(--success)';
+                  this.disabled = true;
+                  
+                  // Show location details without map
+                  document.getElementById('location-details').style.display = 'block';
+                  document.getElementById('location-address').textContent = `Lat: ${latitude.toFixed(6)}, Lng: ${longitude.toFixed(6)}`;
+                  
+                  showLocationToast('Location detected (Maps unavailable)', 'success');
+                },
+                (error) => {
+                  this.innerHTML = '<i class="bi bi-x-circle-fill"></i> Failed';
+                  this.style.backgroundColor = 'var(--danger)';
+                  
+                  setTimeout(() => {
+                    this.innerHTML = '<i class="bi bi-crosshair"></i> Allow';
+                    this.style.backgroundColor = 'var(--primary)';
+                    this.disabled = false;
+                  }, 3000);
+                  
+                  showLocationToast('Location access denied', 'danger');
+                },
+                { timeout: 10000 }
+              );
+            } else {
+              showLocationToast('Geolocation not supported', 'danger');
+            }
+          });
+        }
+      }
+
+      // Simple toast notification function for login page
+      function showLocationToast(message, type) {
+        const toast = document.createElement('div');
+        toast.className = `location-toast toast-${type}`;
+        toast.innerHTML = `
+          <div class="toast-icon">
+            <i class="bi ${type === 'success' ? 'bi-check-circle-fill' : 'bi-exclamation-circle-fill'}"></i>
+          </div>
+          <div class="toast-message">${message}</div>
+        `;
+        
+        // Add toast styles if they don't exist
+        if (!document.querySelector('#toast-styles')) {
+          const style = document.createElement('style');
+          style.id = 'toast-styles';
+          style.textContent = `
+            .location-toast {
+              position: fixed;
+              bottom: 20px;
+              left: 50%;
+              transform: translateX(-50%);
+              background: white;
+              padding: 12px 20px;
+              border-radius: 8px;
+              box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+              display: flex;
+              align-items: center;
+              gap: 10px;
+              z-index: 9999;
+              opacity: 0;
+              transition: opacity 0.3s ease;
+            }
+            .location-toast.show { opacity: 1; }
+            .toast-success { border-left: 4px solid var(--success); }
+            .toast-danger { border-left: 4px solid var(--danger); }
+            .toast-icon i { font-size: 1.2rem; }
+            .toast-success .toast-icon i { color: var(--success); }
+            .toast-danger .toast-icon i { color: var(--danger); }
+          `;
+          document.head.appendChild(style);
+        }
+        
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+          toast.classList.add('show');
+        }, 10);
+        
+        setTimeout(() => {
+          toast.classList.remove('show');
+          setTimeout(() => {
+            if (document.body.contains(toast)) {
+              document.body.removeChild(toast);
+            }
+          }, 300);
+        }, 3000);
+      }
     </script>
   </body>
 </html>
