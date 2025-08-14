@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coach Dashboard - SportConnect</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --primary-light: #ebf0ff;
+            --secondary: #3f37c9;
+            --accent: #f72585;
+            --dark: #1a1a2e;
+            --light: #f8f9fa;
+            --success: #4cc9f0;
+            --warning: #f8961e;
+            --danger: #ef233c;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light);
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary) !important;
+        }
+        
+        .welcome-card {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stats-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .stats-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .btn-logout {
+            background-color: var(--danger);
+            border: none;
+            border-radius: 25px;
+            padding: 8px 20px;
+            color: white;
+        }
+        
+        .btn-logout:hover {
+            background-color: #d32f2f;
+            color: white;
+        }
+        
+        .coaching-stats {
+            background: linear-gradient(135deg, var(--success) 0%, var(--warning) 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .session-card {
+            border-left: 4px solid var(--primary);
+            background: white;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .badge-coaching {
+            background-color: var(--success);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+        
+        .badge-pending {
+            background-color: var(--warning);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-trophy-fill me-2"></i>SportConnect
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a href="user-profile.html" class="btn btn-outline-primary me-2">
+                    <i class="bi bi-person me-2"></i>Profile
+                </a>
+                <button class="btn btn-logout" onclick="logout()">
+                    <i class="bi bi-box-arrow-right me-2"></i>Logout
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="welcome-card">
+            <h1 class="mb-3">Welcome back, Coach <span id="coachName">Coach</span>! 🏆</h1>
+            <p class="mb-0">Ready to inspire the next generation of athletes?</p>
+        </div>
+
+        <!-- Coaching Statistics -->
+        <div class="coaching-stats">
+            <div class="row text-center">
+                <div class="col-md-3">
+                    <h3 id="totalStudents">0</h3>
+                    <p class="mb-0">Total Students</p>
+                </div>
+                <div class="col-md-3">
+                    <h3 id="activeSessions">0</h3>
+                    <p class="mb-0">Active Sessions</p>
+                </div>
+                <div class="col-md-3">
+                    <h3 id="completedSessions">0</h3>
+                    <p class="mb-0">Completed</p>
+                </div>
+                <div class="col-md-3">
+                    <h3 id="rating">4.8</h3>
+                    <p class="mb-0">Rating</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="stats-card">
+                    <h5><i class="bi bi-geo-alt-fill text-primary me-2"></i>Coaching Location</h5>
+                    <p id="coachLocation" class="mb-0">Loading...</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stats-card">
+                    <h5><i class="bi bi-award-fill text-success me-2"></i>Certification</h5>
+                    <p id="coachCertification" class="mb-0">Loading...</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stats-card">
+                    <h5><i class="bi bi-star-fill text-warning me-2"></i>Specialization</h5>
+                    <p id="coachSpecialization" class="mb-0">Loading...</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-8">
+                <div class="stats-card">
+                    <h5><i class="bi bi-calendar-event text-info me-2"></i>Upcoming Sessions</h5>
+                    <div id="upcomingSessions">
+                        <div class="session-card">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">Football Training - Advanced</h6>
+                                    <p class="mb-1 text-muted">Today, 4:00 PM - 6:00 PM</p>
+                                    <p class="mb-0 text-muted">Location: Central Ground</p>
+                                </div>
+                                <span class="badge-coaching">5 Students</span>
+                            </div>
+                        </div>
+                        <div class="session-card">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">Cricket Practice - Intermediate</h6>
+                                    <p class="mb-1 text-muted">Tomorrow, 3:00 PM - 5:00 PM</p>
+                                    <p class="mb-0 text-muted">Location: Cricket Academy</p>
+                                </div>
+                                <span class="badge-coaching">3 Students</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary mt-3">Schedule New Session</button>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stats-card">
+                    <h5><i class="bi bi-people-fill text-success me-2"></i>Recent Students</h5>
+                    <div class="mb-3">
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 35px; height: 35px;">
+                                <span class="text-white fw-bold">JD</span>
+                            </div>
+                            <div>
+                                <h6 class="mb-0">John Doe</h6>
+                                <small class="text-muted">Football - Advanced</small>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="bg-success rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 35px; height: 35px;">
+                                <span class="text-white fw-bold">JS</span>
+                            </div>
+                            <div>
+                                <h6 class="mb-0">Jane Smith</h6>
+                                <small class="text-muted">Cricket - Intermediate</small>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-outline-primary">View All Students</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="stats-card">
+                    <h5><i class="bi bi-graph-up-arrow text-success me-2"></i>Performance Analytics</h5>
+                    <p class="text-muted">Track your coaching progress and student improvement.</p>
+                    <button class="btn btn-outline-success">View Analytics</button>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="stats-card">
+                    <h5><i class="bi bi-calendar-check text-info me-2"></i>Session Requests</h5>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span>New student request</span>
+                            <span class="badge-pending">Pending</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Group session inquiry</span>
+                            <span class="badge-pending">Pending</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-outline-info">Review Requests</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Check if user is logged in and has correct role
+        function checkAuth() {
+            const userData = sessionStorage.getItem('userData');
+            if (!userData) {
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            try {
+                const user = JSON.parse(userData);
+                
+                // Check if user is a coach
+                if (user.user_type !== 'coach') {
+                    // Redirect to appropriate dashboard based on user type
+                    let dashboardUrl = '';
+                    switch(user.user_type) {
+                        case 'player':
+                            dashboardUrl = 'player-dashboard.html';
+                            break;
+                        case 'turf':
+                            dashboardUrl = 'turf-dashboard.html';
+                            break;
+                        default:
+                            dashboardUrl = 'login.html';
+                    }
+                    window.location.href = dashboardUrl;
+                    return;
+                }
+                
+                displayUserInfo(user);
+            } catch (error) {
+                console.error('Error parsing user data:', error);
+                window.location.href = 'login.html';
+            }
+        }
+        
+        // Display user information
+        function displayUserInfo(user) {
+            document.getElementById('coachName').textContent = user.first_name + ' ' + user.last_name;
+            document.getElementById('coachLocation').textContent = user.location || 'Not specified';
+            document.getElementById('coachCertification').textContent = user.certification || 'Not specified';
+            document.getElementById('coachSpecialization').textContent = user.specialization || 'Not specified';
+            
+            // Set mock statistics (in real app, these would come from database)
+            document.getElementById('totalStudents').textContent = '12';
+            document.getElementById('activeSessions').textContent = '3';
+            document.getElementById('completedSessions').textContent = '45';
+            document.getElementById('rating').textContent = '4.8';
+        }
+        
+        // Logout function
+        function logout() {
+            sessionStorage.removeItem('userData');
+            window.location.href = 'login.html';
+        }
+        
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuth();
+        });
+    </script>
+</body>
+</html>

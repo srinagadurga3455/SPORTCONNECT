@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile - SportConnect</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --primary-light: #ebf0ff;
+            --secondary: #3f37c9;
+            --accent: #f72585;
+            --dark: #1a1a2e;
+            --light: #f8f9fa;
+            --success: #4cc9f0;
+            --warning: #f8961e;
+            --danger: #ef233c;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light);
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary) !important;
+        }
+        
+        .profile-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 3rem 0;
+            margin-bottom: 2rem;
+        }
+        
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            margin: 0 auto 1rem;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .profile-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .btn-edit {
+            background-color: var(--primary);
+            border: none;
+            border-radius: 25px;
+            padding: 8px 20px;
+            color: white;
+        }
+        
+        .btn-edit:hover {
+            background-color: var(--primary-dark);
+            color: white;
+        }
+        
+        .btn-save {
+            background-color: var(--success);
+            border: none;
+            border-radius: 25px;
+            padding: 8px 20px;
+            color: white;
+        }
+        
+        .btn-save:hover {
+            background-color: #28a745;
+            color: white;
+        }
+        
+        .btn-cancel {
+            background-color: var(--gray);
+            border: none;
+            border-radius: 25px;
+            padding: 8px 20px;
+            color: white;
+        }
+        
+        .btn-cancel:hover {
+            background-color: #6c757d;
+            color: white;
+        }
+        
+        .form-control:disabled {
+            background-color: #f8f9fa;
+            opacity: 0.8;
+        }
+        
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .info-item:last-child {
+            border-bottom: none;
+        }
+        
+        .info-label {
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .info-value {
+            color: var(--gray);
+        }
+        
+        .edit-mode .form-control {
+            background-color: white;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="#" id="dashboardLink">
+                <i class="bi bi-trophy-fill me-2"></i>SportConnect
+            </a>
+            <div class="navbar-nav ms-auto">
+                <button class="btn btn-edit me-2" onclick="toggleEditMode()" id="editBtn">
+                    <i class="bi bi-pencil me-2"></i>Edit Profile
+                </button>
+                <button class="btn btn-edit" onclick="goToDashboard()">
+                    <i class="bi bi-house me-2"></i>Dashboard
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="profile-header">
+        <div class="container text-center">
+            <div class="profile-avatar" id="profileAvatar">
+                <i class="bi bi-person"></i>
+            </div>
+            <h2 id="profileName">User Name</h2>
+            <p id="profileType">User Type</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <!-- Personal Information -->
+                <div class="profile-card">
+                    <h4 class="mb-3"><i class="bi bi-person-badge text-primary me-2"></i>Personal Information</h4>
+                    <form id="profileForm">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">First Name</label>
+                                    <input type="text" class="form-control" id="firstName" name="first_name" disabled>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Last Name</label>
+                                    <input type="text" class="form-control" id="lastName" name="last_name" disabled>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="email" name="email" disabled>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Phone</label>
+                                    <input type="tel" class="form-control" id="phone" name="phone" disabled>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Location</label>
+                            <input type="text" class="form-control" id="location" name="location" disabled>
+                        </div>
+                        
+                        <!-- User Type Specific Fields -->
+                        <div id="userTypeFields"></div>
+                        
+                        <!-- Action Buttons -->
+                        <div id="actionButtons" style="display: none;">
+                            <button type="submit" class="btn btn-save me-2">
+                                <i class="bi bi-check-circle me-2"></i>Save Changes
+                            </button>
+                            <button type="button" class="btn btn-cancel" onclick="cancelEdit()">
+                                <i class="bi bi-x-circle me-2"></i>Cancel
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <!-- Account Information -->
+                <div class="profile-card">
+                    <h4 class="mb-3"><i class="bi bi-shield-check text-success me-2"></i>Account Information</h4>
+                    <div class="info-item">
+                        <span class="info-label">User ID</span>
+                        <span class="info-value" id="userId">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Member Since</span>
+                        <span class="info-value" id="memberSince">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Last Updated</span>
+                        <span class="info-value" id="lastUpdated">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Status</span>
+                        <span class="badge bg-success">Active</span>
+                    </div>
+                </div>
+                
+                <!-- Quick Actions -->
+                <div class="profile-card">
+                    <h4 class="mb-3"><i class="bi bi-lightning text-warning me-2"></i>Quick Actions</h4>
+                    <button class="btn btn-outline-primary w-100 mb-2">
+                        <i class="bi bi-key me-2"></i>Change Password
+                    </button>
+                    <button class="btn btn-outline-warning w-100 mb-2">
+                        <i class="bi bi-bell me-2"></i>Notification Settings
+                    </button>
+                    <button class="btn btn-outline-danger w-100">
+                        <i class="bi bi-trash me-2"></i>Delete Account
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let isEditMode = false;
+        let originalData = {};
+        
+        // Check if user is logged in
+        function checkAuth() {
+            const userData = sessionStorage.getItem('userData');
+            if (!userData) {
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            try {
+                const user = JSON.parse(userData);
+                displayUserInfo(user);
+                setupUserTypeFields(user);
+                setDashboardLink(user.user_type);
+            } catch (error) {
+                console.error('Error parsing user data:', error);
+                window.location.href = 'login.html';
+            }
+        }
+        
+        // Display user information
+        function displayUserInfo(user) {
+            document.getElementById('profileName').textContent = user.first_name + ' ' + user.last_name;
+            document.getElementById('profileType').textContent = user.user_type.charAt(0).toUpperCase() + user.user_type.slice(1);
+            
+            // Set form values
+            document.getElementById('firstName').value = user.first_name || '';
+            document.getElementById('lastName').value = user.last_name || '';
+            document.getElementById('email').value = user.email || '';
+            document.getElementById('phone').value = user.phone || '';
+            document.getElementById('location').value = user.location || '';
+            
+            // Set account info
+            document.getElementById('userId').textContent = '#' + Math.floor(Math.random() * 10000);
+            document.getElementById('memberSince').textContent = new Date().toLocaleDateString();
+            document.getElementById('lastUpdated').textContent = 'Today';
+            
+            // Store original data
+            originalData = { ...user };
+        }
+        
+        // Setup user type specific fields
+        function setupUserTypeFields(user) {
+            const container = document.getElementById('userTypeFields');
+            let fieldsHTML = '';
+            
+            if (user.user_type === 'player') {
+                fieldsHTML = `
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Primary Sport</label>
+                                <input type="text" class="form-control" id="sport" name="sport" value="${user.sport || ''}" disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Skill Level</label>
+                                <select class="form-control" id="skillLevel" name="skill_level" disabled>
+                                    <option value="beginner" ${user.skill_level === 'beginner' ? 'selected' : ''}>Beginner</option>
+                                    <option value="intermediate" ${user.skill_level === 'intermediate' ? 'selected' : ''}>Intermediate</option>
+                                    <option value="advanced" ${user.skill_level === 'advanced' ? 'selected' : ''}>Advanced</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (user.user_type === 'coach') {
+                fieldsHTML = `
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Certification</label>
+                                <input type="text" class="form-control" id="certification" name="certification" value="${user.certification || ''}" disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Specialization</label>
+                                <input type="text" class="form-control" id="specialization" name="specialization" value="${user.specialization || ''}" disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Experience</label>
+                        <textarea class="form-control" id="experience" name="experience" rows="3" disabled>${user.experience || ''}</textarea>
+                    </div>
+                `;
+            } else if (user.user_type === 'turf') {
+                fieldsHTML = `
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Turf Name</label>
+                                <input type="text" class="form-control" id="turfName" name="turf_name" value="${user.turf_name || ''}" disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Pin Code</label>
+                                <input type="text" class="form-control" id="pinCode" name="pin_code" value="${user.pin_code || ''}" disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Turf Address</label>
+                        <textarea class="form-control" id="turfAddress" name="turf_address" rows="3" disabled>${user.turf_address || ''}</textarea>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Contact Person</label>
+                                <input type="text" class="form-control" id="contactPerson" name="contact_person" value="${user.contact_person || ''}" disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Business Phone</label>
+                                <input type="tel" class="form-control" id="businessPhone" name="business_phone" value="${user.business_phone || ''}" disabled>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            container.innerHTML = fieldsHTML;
+        }
+        
+        // Set dashboard link based on user type
+        function setDashboardLink(userType) {
+            const link = document.getElementById('dashboardLink');
+            switch (userType) {
+                case 'player':
+                    link.href = 'player-dashboard.html';
+                    break;
+                case 'coach':
+                    link.href = 'coach-dashboard.html';
+                    break;
+                case 'turf':
+                    link.href = 'turf-dashboard.html';
+                    break;
+                default:
+                    link.href = 'index.html';
+            }
+        }
+        
+        // Toggle edit mode
+        function toggleEditMode() {
+            isEditMode = !isEditMode;
+            const form = document.getElementById('profileForm');
+            const editBtn = document.getElementById('editBtn');
+            const actionButtons = document.getElementById('actionButtons');
+            
+            if (isEditMode) {
+                form.classList.add('edit-mode');
+                editBtn.style.display = 'none';
+                actionButtons.style.display = 'block';
+                
+                // Enable form fields
+                const inputs = form.querySelectorAll('input, select, textarea');
+                inputs.forEach(input => {
+                    input.disabled = false;
+                });
+            } else {
+                form.classList.remove('edit-mode');
+                editBtn.style.display = 'inline-block';
+                actionButtons.style.display = 'none';
+                
+                // Disable form fields
+                const inputs = form.querySelectorAll('input, select, textarea');
+                inputs.forEach(input => {
+                    input.disabled = true;
+                });
+            }
+        }
+        
+        // Cancel edit
+        function cancelEdit() {
+            // Restore original values
+            displayUserInfo(originalData);
+            setupUserTypeFields(originalData);
+            toggleEditMode();
+        }
+        
+        // Go to dashboard
+        function goToDashboard() {
+            const userData = sessionStorage.getItem('userData');
+            if (userData) {
+                const user = JSON.parse(userData);
+                setDashboardLink(user.user_type);
+                window.location.href = document.getElementById('dashboardLink').href;
+            }
+        }
+        
+        // Handle form submission
+        document.getElementById('profileForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // In a real app, this would send data to backend
+            alert('Profile updated successfully! (This is a demo)');
+            
+            // Update session storage with new data
+            const formData = new FormData(this);
+            const userData = JSON.parse(sessionStorage.getItem('userData'));
+            
+            for (let [key, value] of formData.entries()) {
+                if (userData.hasOwnProperty(key)) {
+                    userData[key] = value;
+                }
+            }
+            
+            sessionStorage.setItem('userData', JSON.stringify(userData));
+            originalData = { ...userData };
+            
+            toggleEditMode();
+        });
+        
+        // Initialize profile
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuth();
+        });
+    </script>
+</body>
+</html>

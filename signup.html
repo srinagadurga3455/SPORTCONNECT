@@ -1,0 +1,1414 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SportConnect | Sign Up</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏆</text></svg>">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
+    <!-- Google Maps API -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg&libraries=places"></script>
+    
+    <style>
+      :root {
+        --primary: #4361ee;
+        --primary-dark: #3a56d4;
+        --primary-light: #ebf0ff;
+        --secondary: #3f37c9;
+        --accent: #f72585;
+        --dark: #1a1a2e;
+        --light: #f8f9fa;
+        --success: #4cc9f0;
+        --warning: #f8961e;
+        --danger: #ef233c;
+        --gray: #6c757d;
+        --gray-light: #e9ecef;
+      }
+      
+      body {
+        font-family: 'Poppins', sans-serif;
+        background-color: var(--light);
+        color: var(--dark);
+        overflow-x: hidden;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+      
+      h1, h2, h3, h4, h5, h6 {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 700;
+      }
+      
+      .signup-container {
+        max-width: 1200px;
+        margin: auto;
+        padding: 20px;
+        flex: 1;
+        display: flex;
+        align-items: center;
+      }
+      
+      .signup-card {
+        border: none;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        width: 100%;
+      }
+      
+      .signup-image {
+        height: 100%;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px;
+        color: white;
+        position: relative;
+        min-height: 500px;
+      }
+      
+      .signup-image::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.2);
+      }
+      
+      .signup-image-content {
+        position: relative;
+        z-index: 1;
+        text-align: center;
+        width: 100%;
+      }
+      
+      .signup-image-content .features-list {
+        text-align: left;
+        max-width: 400px;
+        margin: 30px auto 0;
+      }
+
+      .feature-item {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 12px 15px;
+        border-radius: 8px;
+        backdrop-filter: blur(5px);
+        transition: transform 0.3s ease;
+        margin-bottom: 10px;
+      }
+
+      .feature-item:hover {
+        transform: translateX(5px);
+      }
+
+      @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+      }
+
+      .bi-joystick {
+        animation: pulse 2s infinite;
+      }
+      
+      .signup-image img {
+        max-width: 100%;
+        height: auto;
+        max-height: 250px;
+        object-fit: contain;
+        margin-bottom: 30px;
+        border-radius: 10px;
+      }
+      
+      .signup-image h2 {
+        font-weight: 800;
+        margin-bottom: 20px;
+        font-size: 2rem;
+      }
+      
+      .signup-image p {
+        opacity: 0.9;
+        font-size: 1.1rem;
+        max-width: 500px;
+        margin: 0 auto;
+      }
+      
+      .signup-form {
+        padding: 50px;
+        background-color: white;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+      
+      .signup-form h2 {
+        color: var(--primary);
+        margin-bottom: 30px;
+        position: relative;
+        font-size: 1.8rem;
+      }
+      
+      .signup-form h2:after {
+        content: '';
+        position: absolute;
+        width: 50px;
+        height: 4px;
+        background: linear-gradient(to right, var(--primary), var(--accent));
+        bottom: -10px;
+        left: 0;
+        border-radius: 2px;
+      }
+      
+      .form-control {
+        height: 50px;
+        border-radius: 10px;
+        border: 1px solid var(--gray-light);
+        padding: 10px 15px;
+        margin-bottom: 20px;
+        transition: all 0.3s ease;
+      }
+      
+      .form-control:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 0.25rem rgba(67, 97, 238, 0.25);
+      }
+      
+      textarea.form-control {
+        height: auto;
+        min-height: 100px;
+      }
+      
+      .btn-signup {
+        background: linear-gradient(to right, var(--primary), var(--secondary));
+        color: white;
+        border: none;
+        border-radius: 50px;
+        padding: 12px 30px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+        width: 100%;
+        margin-top: 10px;
+      }
+      
+      .btn-signup:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(67, 97, 238, 0.4);
+        color: white;
+      }
+      
+      .user-type-toggle {
+        display: flex;
+        border-radius: 50px;
+        background-color: var(--gray-light);
+        padding: 5px;
+        margin-bottom: 25px;
+      }
+      
+      .user-type-toggle input {
+        display: none;
+      }
+      
+      .user-type-toggle label {
+        flex: 1;
+        text-align: center;
+        padding: 10px;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 500;
+      }
+      
+      .user-type-toggle input:checked + label {
+        background: linear-gradient(to right, var(--primary), var(--secondary));
+        color: white;
+        box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+      }
+      
+      .divider {
+        display: flex;
+        align-items: center;
+        margin: 25px 0;
+      }
+      
+      .divider:before, .divider:after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background-color: var(--gray-light);
+      }
+      
+      .divider span {
+        padding: 0 15px;
+        color: var(--gray);
+      }
+      
+      .social-signup .btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px;
+        border-radius: 50px;
+        font-weight: 500;
+        margin-bottom: 10px;
+        transition: all 0.3s ease;
+      }
+      
+      .social-signup .btn i {
+        margin-right: 10px;
+        font-size: 1.2rem;
+      }
+      
+      .btn-google {
+        background-color: white;
+        color: #DB4437;
+        border: 1px solid var(--gray-light);
+      }
+      
+      .btn-google:hover {
+        background-color: #f8f9fa;
+        border-color: #DB4437;
+      }
+      
+      .btn-facebook {
+        background-color: #1877F2;
+        color: white;
+      }
+      
+      .btn-facebook:hover {
+        background-color: #166FE5;
+        color: white;
+      }
+      
+      .signup-footer {
+        text-align: center;
+        margin-top: 30px;
+      }
+      
+      .signup-footer a {
+        color: var(--primary);
+        font-weight: 500;
+        text-decoration: none;
+      }
+      
+      .signup-footer a:hover {
+        text-decoration: underline;
+      }
+      
+      /* Role-specific fields */
+      .role-fields {
+        display: none;
+        transition: all 0.3s ease;
+      }
+      
+      /* File upload styling */
+      .file-upload {
+        position: relative;
+        overflow: hidden;
+        display: inline-block;
+        width: 100%;
+      }
+      
+      .file-upload-btn {
+        border: 2px dashed var(--gray-light);
+        border-radius: 10px;
+        padding: 30px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        width: 100%;
+      }
+      
+      .file-upload-btn:hover {
+        border-color: var(--primary);
+        background-color: var(--primary-light);
+      }
+      
+      .file-upload-input {
+        position: absolute;
+        left: 0;
+        top: 0;
+        opacity: 0;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+      }
+      
+      /* Sports selection */
+      .sport-selection {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+      
+      .sport-checkbox {
+        display: none;
+      }
+      
+      .sport-label {
+        padding: 8px 15px;
+        border-radius: 50px;
+        background-color: var(--gray-light);
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+      
+      .sport-checkbox:checked + .sport-label {
+        background-color: var(--primary);
+        color: white;
+      }
+      
+      /* Location button */
+      .location-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px 15px;
+        background-color: var(--primary-light);
+        color: var(--primary);
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-bottom: 20px;
+        position: relative;
+      }
+      
+      .location-btn:hover {
+        background-color: var(--primary);
+        color: white;
+      }
+      
+      .location-btn i {
+        margin-right: 5px;
+      }
+
+      /* Accuracy indicator */
+      .accuracy-indicator {
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        background: var(--success);
+        color: white;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.7rem;
+        font-weight: bold;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .accuracy-indicator.show {
+        opacity: 1;
+      }
+
+      .accuracy-indicator.high {
+        background: var(--success);
+      }
+
+      .accuracy-indicator.medium {
+        background: var(--warning);
+      }
+
+      .accuracy-indicator.low {
+        background: var(--danger);
+      }
+
+      /* Accuracy indicator animation */
+      @keyframes accuracyPulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+      }
+
+      .accuracy-indicator.show {
+        opacity: 1;
+        animation: accuracyPulse 0.5s ease-in-out;
+      }
+      
+      .location-wrapper {
+        display: flex;
+        gap: 10px;
+      }
+      
+      .location-wrapper .form-control {
+        flex: 1;
+      }
+
+      /* Location Toast */
+      .location-toast {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: white;
+        padding: 12px 20px;
+        border-radius: 8px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        z-index: 9999;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      .location-toast.show {
+        opacity: 1;
+      }
+
+      .toast-success {
+        border-left: 4px solid var(--success);
+      }
+
+      .toast-danger {
+        border-left: 4px solid var(--danger);
+      }
+
+      .toast-icon i {
+        font-size: 1.2rem;
+      }
+
+      .toast-success .toast-icon i {
+        color: var(--success);
+      }
+
+      .toast-danger .toast-icon i {
+        color: var(--danger);
+      }
+
+      /* Spinner for location button */
+      .bi-gear-fill.spin {
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+
+      /* Google Maps autocomplete dropdown styling */
+      .pac-container {
+        z-index: 1051 !important;
+        font-family: 'Poppins', sans-serif;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        border: none;
+        margin-top: 5px;
+      }
+
+      .pac-item {
+        padding: 8px 15px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+      }
+
+      .pac-item:hover {
+        background-color: var(--primary-light);
+      }
+
+      .pac-item-query {
+        color: var(--primary);
+        font-size: 1rem;
+      }
+
+      .pac-icon {
+        display: none;
+      }
+      
+      @media (max-width: 991.98px) {
+        .signup-image {
+          min-height: 400px;
+          padding: 30px;
+        }
+        
+        .signup-form {
+          padding: 30px;
+        }
+      }
+      
+      @media (max-width: 767.98px) {
+        .signup-container {
+          padding: 15px;
+        }
+        
+        .signup-image {
+          min-height: 300px;
+        }
+        
+        .signup-image h2 {
+          font-size: 1.5rem;
+        }
+        
+        .signup-image p {
+          font-size: 1rem;
+        }
+        
+        .signup-form {
+          padding: 25px;
+        }
+        
+        .signup-form h2 {
+          font-size: 1.5rem;
+        }
+        
+        .location-wrapper {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="signup-container">
+      <div class="row g-0 signup-card">
+        <!-- Signup Image Section -->
+        <div class="col-lg-6 d-none d-lg-block">
+          <div class="signup-image">
+            <div class="signup-image-content">
+              <div class="mb-4">
+                <i class="bi bi-joystick" style="font-size: 3rem; color: var(--accent);"></i>
+              </div>
+              <h2>Join SportConnect Today</h2>
+              <p class="mb-4">Become part of the largest sports community in your area and unlock amazing features:</p>
+              <div class="features-list">
+                <div class="feature-item">
+                  <i class="bi bi-star-fill me-2"></i> Find the best playing venues
+                </div>
+                <div class="feature-item">
+                  <i class="bi bi-chat-dots-fill me-2"></i> Connect with like-minded players
+                </div>
+                <div class="feature-item">
+                  <i class="bi bi-award-fill me-2"></i> Improve your skills with coaches
+                </div>
+                <div class="feature-item">
+                  <i class="bi bi-graph-up-arrow me-2"></i> Grow your sports business
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Signup Form Section -->
+        <div class="col-lg-6">
+          <div class="signup-form">
+            <h2>Create Your Account</h2>
+            
+            <!-- User Type Toggle -->
+            <div class="user-type-toggle">
+              <input type="radio" id="player-signup" name="user-type" checked>
+              <label for="player-signup">Player</label>
+              <input type="radio" id="coach-signup" name="user-type">
+              <label for="coach-signup">Coach</label>
+              <input type="radio" id="turf-signup" name="user-type">
+              <label for="turf-signup">Turf Admin</label>
+            </div>
+            
+            <!-- Signup Form -->
+            <form id="signupForm" method="POST" action="signup.php">
+              <!-- Hidden user type field -->
+              <input type="hidden" name="user_type" id="userTypeField" value="player">
+              
+              <!-- Common Fields -->
+              <div class="row">
+                <div class="col-md-6">
+                  <input type="text" class="form-control" name="first_name" placeholder="First Name" required>
+                </div>
+                <div class="col-md-6">
+                  <input type="text" class="form-control" name="last_name" placeholder="Last Name" required>
+                </div>
+              </div>
+              <input type="email" class="form-control" name="email" placeholder="Email Address" required>
+              <input type="tel" class="form-control" name="phone" placeholder="Phone Number" required>
+              <input type="password" class="form-control" name="password" placeholder="Password" required>
+              <input type="password" class="form-control" name="confirm_password" placeholder="Confirm Password" required>
+              
+              <!-- Player Specific Fields -->
+              <div class="role-fields" id="playerFields">
+                <div class="location-wrapper">
+                  <input type="text" class="form-control" id="playerLocation" name="player_location" placeholder="Enter your location" required>
+                  <button type="button" class="location-btn" id="playerLocationBtn">
+                    <i class="bi bi-geo-alt-fill"></i> Current
+                    <div class="accuracy-indicator" id="playerAccuracyIndicator"></div>
+                  </button>
+                </div>
+                <select class="form-control" name="player_sport" required>
+                  <option value="" disabled selected>Select Your Primary Sport</option>
+                  <option value="football">Football</option>
+                  <option value="cricket">Cricket</option>
+                  <option value="tennis">Tennis</option>
+                  <option value="badminton">Badminton</option>
+                  <option value="basketball">Basketball</option>
+                  <option value="volleyball">Volleyball</option>
+                </select>
+                <input type="text" class="form-control mt-3" name="player_skill" placeholder="Skill Level (Beginner/Intermediate/Advanced)">
+              </div>
+              
+              <!-- Coach Specific Fields -->
+              <div class="role-fields" id="coachFields">
+                <div class="location-wrapper">
+                  <input type="text" class="form-control" id="coachLocation" name="coach_location" placeholder="Enter your coaching location" required>
+                  <button type="button" class="location-btn" id="coachLocationBtn">
+                    <i class="bi bi-geo-alt-fill"></i> Current
+                    <div class="accuracy-indicator" id="coachAccuracyIndicator"></div>
+                  </button>
+                </div>
+                <input type="text" class="form-control" name="coach_certification" placeholder="Certification">
+                <input type="text" class="form-control" name="coach_specialization" placeholder="Specialization">
+                <textarea class="form-control" name="coach_experience" placeholder="Experience (Years)" rows="2"></textarea>
+                <div class="file-upload">
+                  <label class="file-upload-btn">
+                    <span id="certificate-text"><i class="bi bi-cloud-arrow-up"></i> Upload Certification Documents</span>
+                    <input type="file" class="file-upload-input" id="certificate-upload" accept=".pdf,.jpg,.png">
+                  </label>
+                </div>
+                <small class="text-muted">Upload your coaching certification for verification (PDF, JPG, PNG)</small>
+              </div>
+              
+              <!-- Turf Admin Specific Fields -->
+              <div class="role-fields" id="turfFields">
+                <input type="text" class="form-control" name="turf_name" placeholder="Turf Name" required>
+                <textarea class="form-control" name="turf_address" placeholder="Turf Address" rows="2" required></textarea>
+                <div class="location-wrapper">
+                  <input type="text" class="form-control" id="turfLocation" name="turf_location" placeholder="Enter turf location" required>
+                  <button type="button" class="location-btn" id="turfLocationBtn">
+                    <i class="bi bi-geo-alt-fill"></i> Current
+                    <div class="accuracy-indicator" id="turfAccuracyIndicator"></div>
+                  </button>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-md-6">
+                    <input type="text" class="form-control" name="turf_pin_code" placeholder="Pin Code" required>
+                  </div>
+                </div>
+                <input type="text" class="form-control" name="turf_contact_person" placeholder="Contact Person">
+                <input type="tel" class="form-control" name="turf_business_phone" placeholder="Business Phone Number">
+                
+                <div class="mb-3">
+                  <label class="form-label">Available Sports</label>
+                  <div class="sport-selection">
+                    <input type="checkbox" id="football" name="turf_sports[]" value="football" class="sport-checkbox">
+                    <label for="football" class="sport-label">Football</label>
+                    
+                    <input type="checkbox" id="cricket" name="turf_sports[]" value="cricket" class="sport-checkbox">
+                    <label for="cricket" class="sport-label">Cricket</label>
+                    
+                    <input type="checkbox" id="tennis" name="turf_sports[]" value="tennis" class="sport-checkbox">
+                    <label for="tennis" class="sport-label">Tennis</label>
+                    
+                    <input type="checkbox" id="badminton" name="turf_sports[]" value="badminton" class="sport-checkbox">
+                    <label for="badminton" class="sport-label">Badminton</label>
+                    
+                    <input type="checkbox" id="basketball" name="turf_sports[]" value="basketball" class="sport-checkbox">
+                    <label for="basketball" class="sport-label">Basketball</label>
+                    
+                    <input type="checkbox" id="volleyball" name="turf_sports[]" value="volleyball" class="sport-checkbox">
+                    <label for="volleyball" class="sport-label">Volleyball</label>
+                  </div>
+                </div>
+                
+                <div class="file-upload">
+                  <label class="file-upload-btn">
+                    <span id="turf-image-text"><i class="bi bi-cloud-arrow-up"></i> Upload Turf Images</span>
+                    <input type="file" class="file-upload-input" id="turf-image-upload" accept=".jpg,.png" multiple>
+                  </label>
+                </div>
+                <small class="text-muted">Upload images of your turf facility (JPG, PNG)</small>
+              </div>
+              
+              <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" id="terms" required>
+                <label class="form-check-label" for="terms">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></label>
+              </div>
+              
+              <button type="submit" class="btn btn-signup">Sign Up</button>
+            </form>
+            
+            <!-- Social Signup Divider -->
+            <div class="divider">
+              <span>OR</span>
+            </div>
+            
+            <!-- Social Signup Buttons -->
+            <div class="social-signup">
+              <button class="btn btn-google">
+                <i class="bi bi-google"></i> Continue with Google
+              </button>
+              <button class="btn btn-facebook">
+                <i class="bi bi-facebook"></i> Continue with Facebook
+              </button>
+            </div>
+            
+            <!-- Login Link -->
+            <div class="signup-footer">
+              <p>Already have an account? <a href="login.html">Log in here</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+      // Toggle between user types
+      document.querySelectorAll('.user-type-toggle input').forEach(input => {
+        input.addEventListener('change', function() {
+          // Hide all role-specific fields
+          document.querySelectorAll('.role-fields').forEach(field => {
+            field.style.display = 'none';
+          });
+          
+          // Show fields for selected role and update hidden field
+          if (this.id === 'player-signup') {
+            document.getElementById('playerFields').style.display = 'block';
+            document.getElementById('userTypeField').value = 'player';
+          } else if (this.id === 'coach-signup') {
+            document.getElementById('coachFields').style.display = 'block';
+            document.getElementById('userTypeField').value = 'coach';
+          } else if (this.id === 'turf-signup') {
+            document.getElementById('turfFields').style.display = 'block';
+            document.getElementById('userTypeField').value = 'turf';
+          }
+        });
+      });
+      
+      // Initialize with player fields visible
+      document.getElementById('playerFields').style.display = 'block';
+      
+      // File upload display
+      document.getElementById('certificate-upload').addEventListener('change', function(e) {
+        const files = e.target.files;
+        if (files.length > 0) {
+          document.getElementById('certificate-text').innerHTML = 
+            `<i class="bi bi-check-circle-fill text-success"></i> ${files.length} file(s) selected`;
+        }
+      });
+      
+      document.getElementById('turf-image-upload').addEventListener('change', function(e) {
+        const files = e.target.files;
+        if (files.length > 0) {
+          document.getElementById('turf-image-text').innerHTML = 
+            `<i class="bi bi-check-circle-fill text-success"></i> ${files.length} image(s) selected`;
+        }
+      });
+
+      // Enhanced Google Maps Location Functionality with High Accuracy
+      function initLocationAutocomplete(inputId, buttonId) {
+        // Check if Google Maps API is loaded
+        if (typeof google === 'undefined' || typeof google.maps === 'undefined') {
+          console.error('Google Maps API not loaded');
+          return;
+        }
+
+        try {
+          const input = document.getElementById(inputId);
+          const button = document.getElementById(buttonId);
+          
+          if (!input || !button) {
+            console.error('Input or button element not found');
+            return;
+          }
+
+          const autocomplete = new google.maps.places.Autocomplete(input, {
+            types: ['(regions)', 'geocode'],
+            fields: ['geometry', 'name', 'formatted_address', 'address_components']
+          });
+
+          button.addEventListener('click', () => {
+            if (navigator.geolocation) {
+              // Show loading state with accuracy indicator
+              const originalHtml = button.innerHTML;
+              button.innerHTML = '<i class="bi bi-gear-fill spin"></i> Detecting with High Accuracy...';
+              button.disabled = true;
+
+              // First attempt with high accuracy
+              const highAccuracyOptions = {
+                enableHighAccuracy: true,
+                timeout: 15000,
+                maximumAge: 0 // Always get fresh position
+              };
+              
+              // Second attempt with lower accuracy if high accuracy fails
+              const lowAccuracyOptions = {
+                enableHighAccuracy: false,
+                timeout: 10000,
+                maximumAge: 300000 // 5 minutes
+              };
+
+              // Try high accuracy first
+              navigator.geolocation.getCurrentPosition(
+                (position) => {
+                  // Success callback with high accuracy
+                  const latitude = position.coords.latitude;
+                  const longitude = position.coords.longitude;
+                  const accuracy = position.coords.accuracy;
+                  const timestamp = position.timestamp;
+                  
+                  console.log('High accuracy location obtained:', {
+                    lat: latitude,
+                    lng: longitude,
+                    accuracy: accuracy + ' meters',
+                    timestamp: new Date(timestamp).toLocaleString()
+                  });
+
+                  try {
+                    const geocoder = new google.maps.Geocoder();
+                    const latlng = { lat: latitude, lng: longitude };
+
+                    geocoder.geocode({ location: latlng }, (results, status) => {
+                      button.innerHTML = originalHtml;
+                      button.disabled = false;
+
+                      if (status === "OK" && results[0]) {
+                        // Try to find locality or neighborhood first
+                        let area = '';
+                        const addressComponents = results[0].address_components;
+                        
+                        const componentTypes = [
+                          'locality',
+                          'neighborhood',
+                          'sublocality',
+                          'administrative_area_level_2',
+                          'administrative_area_level_1'
+                        ];
+
+                        for (let type of componentTypes) {
+                          const component = addressComponents.find(c => c.types.includes(type));
+                          if (component) {
+                            area = component.long_name;
+                            break;
+                          }
+                        }
+
+                        input.value = area || results[0].formatted_address;
+                        
+                        // Show success message with accuracy info
+                        showLocationToast(`Location detected with ${Math.round(accuracy)}m accuracy!`, 'success');
+                        
+                        // Update accuracy indicator
+                        updateAccuracyIndicator(buttonId, accuracy, 'success');
+                        
+                        // Optional: Open Google Maps in new tab
+                        const mapUrl = `https://www.google.com/maps/@${latlng.lat},${latlng.lng},15z`;
+                        console.log('Google Maps URL:', mapUrl);
+                      } else {
+                        console.error("Geocoder failed due to: " + status);
+                        // Still show coordinates if geocoding fails
+                        input.value = `Lat: ${latitude.toFixed(6)}, Lng: ${longitude.toFixed(6)} (±${Math.round(accuracy)}m)`;
+                        showLocationToast(`Coordinates detected with ${Math.round(accuracy)}m accuracy!`, 'success');
+                      }
+                    });
+                  } catch (error) {
+                    console.error('Error in geocoding:', error);
+                    button.innerHTML = originalHtml;
+                    button.disabled = false;
+                    // Fallback to coordinates
+                    input.value = `Lat: ${latitude.toFixed(6)}, Lng: ${longitude.toFixed(6)} (±${Math.round(accuracy)}m)`;
+                    showLocationToast(`Coordinates detected with ${Math.round(accuracy)}m accuracy!`, 'success');
+                  }
+                },
+                (error) => {
+                  // High accuracy failed, try low accuracy
+                  console.log('High accuracy failed, trying low accuracy...');
+                  
+                  navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                      // Success callback with low accuracy
+                      const latitude = position.coords.latitude;
+                      const longitude = position.coords.longitude;
+                      const accuracy = position.coords.accuracy;
+                      
+                      console.log('Low accuracy location obtained:', {
+                        lat: latitude,
+                        lng: longitude,
+                        accuracy: accuracy + ' meters'
+                      });
+
+                      try {
+                        const geocoder = new google.maps.Geocoder();
+                        const latlng = { lat: latitude, lng: longitude };
+
+                        geocoder.geocode({ location: latlng }, (results, status) => {
+                          button.innerHTML = originalHtml;
+                          button.disabled = false;
+
+                          if (status === "OK" && results[0]) {
+                            // Try to find locality or neighborhood first
+                            let area = '';
+                            const addressComponents = results[0].address_components;
+                            
+                            const componentTypes = [
+                              'locality',
+                              'neighborhood',
+                              'sublocality',
+                              'administrative_area_level_2',
+                              'administrative_area_level_1'
+                            ];
+
+                            for (let type of componentTypes) {
+                              const component = addressComponents.find(c => c.types.includes(type));
+                              if (component) {
+                                area = component.long_name;
+                                break;
+                              }
+                            }
+
+                            input.value = area || results[0].formatted_address;
+                            
+                            showLocationToast(`Location detected with ${Math.round(accuracy)}m accuracy (lower precision)`, 'warning');
+                        
+                        // Update accuracy indicator
+                        updateAccuracyIndicator(buttonId, accuracy, 'warning');
+                          } else {
+                            console.error("Geocoder failed due to: " + status);
+                            input.value = `Lat: ${latitude.toFixed(6)}, Lng: ${longitude.toFixed(6)} (±${Math.round(accuracy)}m)`;
+                            showLocationToast(`Coordinates detected with ${Math.round(accuracy)}m accuracy (lower precision)`, 'warning');
+                            
+                            // Update accuracy indicator
+                            updateAccuracyIndicator(buttonId, accuracy, 'warning');
+                          }
+                        });
+                      } catch (error) {
+                        console.error('Error in geocoding:', error);
+                        button.innerHTML = originalHtml;
+                        button.disabled = false;
+                        input.value = `Lat: ${latitude.toFixed(6)}, Lng: ${longitude.toFixed(6)} (±${Math.round(accuracy)}m)`;
+                        showLocationToast(`Coordinates detected with ${Math.round(accuracy)}m accuracy (lower precision)`, 'warning');
+                        
+                        // Update accuracy indicator
+                        updateAccuracyIndicator(buttonId, accuracy, 'warning');
+                      }
+                    },
+                    (lowAccuracyError) => {
+                      // Both attempts failed
+                      button.innerHTML = originalHtml;
+                      button.disabled = false;
+                      console.error("Both high and low accuracy location attempts failed:", lowAccuracyError);
+                      
+                      let errorMessage = 'Location access denied. Please enter manually.';
+                      switch(lowAccuracyError.code) {
+                        case lowAccuracyError.PERMISSION_DENIED:
+                          errorMessage = 'Location access denied. Please enable location services.';
+                          break;
+                        case lowAccuracyError.POSITION_UNAVAILABLE:
+                          errorMessage = 'Location unavailable. Please enter manually.';
+                          break;
+                        case lowAccuracyError.TIMEOUT:
+                          errorMessage = 'Location request timed out. Please try again.';
+                          break;
+                        default:
+                          errorMessage = 'An unknown error occurred. Please try again.';
+                      }
+                      
+                      showLocationToast(errorMessage, 'danger');
+                    },
+                    lowAccuracyOptions
+                  );
+                },
+                highAccuracyOptions
+              );
+            } else {
+              showLocationToast('Geolocation not supported. Please enter manually.', 'danger');
+            }
+          });
+
+          // Show selected place on map when user selects from dropdown
+          autocomplete.addListener('place_changed', () => {
+            try {
+              const place = autocomplete.getPlace();
+              if (place.geometry) {
+                console.log('Selected place:', place);
+                // You can add additional functionality here like showing coordinates
+              }
+            } catch (error) {
+              console.error('Error handling place selection:', error);
+            }
+          });
+        } catch (error) {
+          console.error('Error initializing location autocomplete:', error);
+        }
+      }
+
+      // Show toast notification
+      function showLocationToast(message, type) {
+        const toast = document.createElement('div');
+        toast.className = `location-toast toast-${type}`;
+        toast.innerHTML = `
+          <div class="toast-icon">
+            <i class="bi ${type === 'success' ? 'bi-check-circle-fill' : 'bi-exclamation-circle-fill'}"></i>
+          </div>
+          <div class="toast-message">${message}</div>
+        `;
+        
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+          toast.classList.add('show');
+        }, 10);
+        
+        setTimeout(() => {
+          toast.classList.remove('show');
+          setTimeout(() => {
+            document.body.removeChild(toast);
+          }, 300);
+        }, 3000);
+      }
+
+      // Update accuracy indicator
+      function updateAccuracyIndicator(buttonId, accuracy, type = 'success') {
+        const indicator = document.getElementById(buttonId.replace('Btn', 'AccuracyIndicator'));
+        if (indicator) {
+          // Determine accuracy level
+          let accuracyLevel = 'high';
+          let accuracyText = 'H';
+          
+          if (accuracy <= 10) {
+            accuracyLevel = 'high';
+            accuracyText = 'H';
+          } else if (accuracy <= 50) {
+            accuracyLevel = 'medium';
+            accuracyText = 'M';
+          } else {
+            accuracyLevel = 'low';
+            accuracyText = 'L';
+          }
+          
+          // Update indicator
+          indicator.className = `accuracy-indicator ${accuracyLevel} show`;
+          indicator.textContent = accuracyText;
+          indicator.title = `Accuracy: ±${Math.round(accuracy)} meters`;
+          
+          // Auto-hide after 5 seconds
+          setTimeout(() => {
+            indicator.classList.remove('show');
+          }, 5000);
+        }
+      }
+
+      // Check if Google Maps API is loaded
+      function checkGoogleMapsLoaded() {
+        return typeof google !== 'undefined' && typeof google.maps !== 'undefined';
+      }
+
+      // Wait for Google Maps API to load
+      function waitForGoogleMaps(callback, maxAttempts = 30) {
+        let attempts = 0;
+        const checkInterval = setInterval(() => {
+          attempts++;
+          if (checkGoogleMapsLoaded()) {
+            clearInterval(checkInterval);
+            callback();
+          } else if (attempts >= maxAttempts) {
+            clearInterval(checkInterval);
+            console.error('Google Maps API failed to load after 30 seconds');
+            // Disable all location buttons if API fails to load
+            const locationBtns = document.querySelectorAll('.location-btn');
+            locationBtns.forEach(btn => {
+              btn.disabled = true;
+              btn.innerHTML = '<i class="bi bi-exclamation-triangle"></i> Maps Unavailable';
+              btn.style.backgroundColor = 'var(--gray)';
+            });
+          }
+        }, 1000);
+      }
+
+      // Initialize location autocomplete when DOM is loaded
+      document.addEventListener('DOMContentLoaded', function() {
+        // Wait for Google Maps API to load before initializing
+        waitForGoogleMaps(() => {
+          console.log('Google Maps API loaded successfully');
+          try {
+            initLocationAutocomplete('playerLocation', 'playerLocationBtn');
+            initLocationAutocomplete('coachLocation', 'coachLocationBtn');
+            initLocationAutocomplete('turfLocation', 'turfLocationBtn');
+          } catch (error) {
+            console.error('Error initializing location features:', error);
+          }
+        });
+
+        // Fallback: If Google Maps fails, still allow manual location input
+        setTimeout(() => {
+          if (!checkGoogleMapsLoaded()) {
+            console.log('Setting up fallback location functionality');
+            setupFallbackLocation();
+          }
+        }, 35000); // Wait 35 seconds before setting up fallback
+      });
+
+      // Form submission handling
+      document.getElementById('signupForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Get the current user type
+        const userType = document.getElementById('userTypeField').value;
+        
+        // Validate form based on user type
+        if (!validateForm(userType)) {
+          return;
+        }
+        
+        // Show loading state
+        const submitBtn = document.querySelector('.btn-signup');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="bi bi-gear-fill spin"></i> Creating Account...';
+        submitBtn.disabled = true;
+        
+        // Submit form via AJAX
+        const formData = new FormData(this);
+        
+        fetch('signup.php', {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            showToast(data.message, 'success');
+            
+            // Store user data in sessionStorage for dashboard access
+            const userData = data.user_data;
+            
+            // Store in sessionStorage
+            sessionStorage.setItem('userData', JSON.stringify(userData));
+            
+            // Redirect to appropriate dashboard based on user type
+            setTimeout(() => {
+              let dashboardUrl = '';
+              
+              switch(userType) {
+                case 'player':
+                  dashboardUrl = 'player-dashboard.html';
+                  break;
+                case 'coach':
+                  dashboardUrl = 'coach-dashboard.html';
+                  break;
+                case 'turf':
+                  dashboardUrl = 'turf-dashboard.html';
+                  break;
+                default:
+                  dashboardUrl = 'login.html';
+              }
+              
+              window.location.href = dashboardUrl;
+            }, 2000);
+          } else {
+            showToast(data.message, 'error');
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          showToast('An error occurred. Please try again.', 'error');
+        })
+        .finally(() => {
+          // Reset button state
+          submitBtn.innerHTML = originalText;
+          submitBtn.disabled = false;
+        });
+      });
+      
+      // Form validation function
+      function validateForm(userType) {
+        const requiredFields = ['first_name', 'last_name', 'email', 'phone', 'password', 'confirm_password'];
+        
+        // Check common required fields
+        for (let field of requiredFields) {
+          const input = document.querySelector(`[name="${field}"]`);
+          if (!input.value.trim()) {
+            showToast(`Please fill in ${field.replace('_', ' ')}`, 'error');
+            input.focus();
+            return false;
+          }
+        }
+        
+        // Check password confirmation
+        const password = document.querySelector('[name="password"]').value;
+        const confirmPassword = document.querySelector('[name="confirm_password"]').value;
+        if (password !== confirmPassword) {
+          showToast('Passwords do not match', 'error');
+          return false;
+        }
+        
+        // Check role-specific required fields
+        if (userType === 'player') {
+          const playerLocation = document.querySelector('[name="player_location"]').value;
+          const playerSport = document.querySelector('[name="player_sport"]').value;
+          
+          if (!playerLocation.trim()) {
+            showToast('Please enter your location', 'error');
+            return false;
+          }
+          if (!playerSport) {
+            showToast('Please select your primary sport', 'error');
+            return false;
+          }
+        } else if (userType === 'coach') {
+          const coachLocation = document.querySelector('[name="coach_location"]').value;
+          if (!coachLocation.trim()) {
+            showToast('Please enter your coaching location', 'error');
+            return false;
+          }
+        } else if (userType === 'turf') {
+          const turfName = document.querySelector('[name="turf_name"]').value;
+          const turfAddress = document.querySelector('[name="turf_address"]').value;
+          const turfLocation = document.querySelector('[name="turf_location"]').value;
+          const pinCode = document.querySelector('[name="turf_pin_code"]').value;
+          
+          if (!turfName.trim() || !turfAddress.trim() || !turfLocation.trim() || !pinCode.trim()) {
+            showToast('Please fill in all required turf fields', 'error');
+            return false;
+          }
+        }
+        
+        return true;
+      }
+      
+      // Enhanced toast notification function
+      function showToast(message, type) {
+        const toast = document.createElement('div');
+        toast.className = `location-toast toast-${type === 'error' ? 'danger' : type}`;
+        toast.innerHTML = `
+          <div class="toast-icon">
+            <i class="bi ${type === 'success' ? 'bi-check-circle-fill' : 'bi-exclamation-circle-fill'}"></i>
+          </div>
+          <div class="toast-message">${message}</div>
+        `;
+        
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+          toast.classList.add('show');
+        }, 10);
+        
+        setTimeout(() => {
+          toast.classList.remove('show');
+          setTimeout(() => {
+            document.body.removeChild(toast);
+          }, 300);
+        }, 4000);
+      }
+
+      // Enhanced Fallback location functionality when Google Maps is unavailable
+      function setupFallbackLocation() {
+        const locationBtns = document.querySelectorAll('.location-btn');
+        locationBtns.forEach(btn => {
+          btn.addEventListener('click', function() {
+            if (navigator.geolocation) {
+              const originalHtml = this.innerHTML;
+              this.innerHTML = '<i class="bi bi-gear-fill spin"></i> Detecting with High Accuracy...';
+              this.disabled = true;
+
+              // First attempt with high accuracy
+              const highAccuracyOptions = {
+                enableHighAccuracy: true,
+                timeout: 15000,
+                maximumAge: 0
+              };
+              
+              // Second attempt with lower accuracy if high accuracy fails
+              const lowAccuracyOptions = {
+                enableHighAccuracy: false,
+                timeout: 10000,
+                maximumAge: 300000
+              };
+
+              // Try high accuracy first
+              navigator.geolocation.getCurrentPosition(
+                (position) => {
+                  this.innerHTML = originalHtml;
+                  this.disabled = false;
+                  
+                  const latitude = position.coords.latitude;
+                  const longitude = position.coords.longitude;
+                  const accuracy = position.coords.accuracy;
+                  
+                  // Find the corresponding input field
+                  const inputId = this.id.replace('Btn', '');
+                  const input = document.getElementById(inputId);
+                  if (input) {
+                    input.value = `Lat: ${latitude.toFixed(6)}, Lng: ${longitude.toFixed(6)} (±${Math.round(accuracy)}m)`;
+                    showLocationToast(`Coordinates detected with ${Math.round(accuracy)}m accuracy! (Maps unavailable)`, 'success');
+                    
+                    // Update accuracy indicator
+                    updateAccuracyIndicator(this.id, accuracy, 'success');
+                  }
+                },
+                (error) => {
+                  // High accuracy failed, try low accuracy
+                  console.log('High accuracy failed, trying low accuracy...');
+                  
+                  navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                      this.innerHTML = originalHtml;
+                      this.disabled = false;
+                      
+                      const latitude = position.coords.latitude;
+                      const longitude = position.coords.longitude;
+                      const accuracy = position.coords.accuracy;
+                      
+                      // Find the corresponding input field
+                      const inputId = this.id.replace('Btn', '');
+                      const input = document.getElementById(inputId);
+                      if (input) {
+                        input.value = `Lat: ${latitude.toFixed(6)}, Lng: ${longitude.toFixed(6)} (±${Math.round(accuracy)}m)`;
+                        showLocationToast(`Coordinates detected with ${Math.round(accuracy)}m accuracy (lower precision, Maps unavailable)`, 'warning');
+                        
+                        // Update accuracy indicator
+                        updateAccuracyIndicator(this.id, accuracy, 'warning');
+                      }
+                    },
+                    (lowAccuracyError) => {
+                      this.innerHTML = originalHtml;
+                      this.disabled = false;
+                      
+                      let errorMessage = 'Location access denied';
+                      switch(lowAccuracyError.code) {
+                        case lowAccuracyError.PERMISSION_DENIED:
+                          errorMessage = 'Location access denied. Please enable location services.';
+                          break;
+                        case lowAccuracyError.POSITION_UNAVAILABLE:
+                          errorMessage = 'Location unavailable. Please try again.';
+                          break;
+                        case lowAccuracyError.TIMEOUT:
+                          errorMessage = 'Location request timed out. Please try again.';
+                          break;
+                        default:
+                          errorMessage = 'An unknown error occurred. Please try again.';
+                      }
+                      
+                      showLocationToast(errorMessage, 'danger');
+                    },
+                    lowAccuracyOptions
+                  );
+                },
+                highAccuracyOptions
+              );
+            } else {
+              showLocationToast('Geolocation not supported', 'danger');
+            }
+          });
+        });
+      }
+    </script>
+  </body>
+</html>

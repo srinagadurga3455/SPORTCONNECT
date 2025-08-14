@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turf Dashboard - SportConnect</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --primary-light: #ebf0ff;
+            --secondary: #3f37c9;
+            --accent: #f72585;
+            --dark: #1a1a2e;
+            --light: #f8f9fa;
+            --success: #4cc9f0;
+            --warning: #f8961e;
+            --danger: #ef233c;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light);
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary) !important;
+        }
+        
+        .welcome-card {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stats-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .stats-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .btn-logout {
+            background-color: var(--danger);
+            border: none;
+            border-radius: 25px;
+            padding: 8px 20px;
+            color: white;
+        }
+        
+        .btn-logout:hover {
+            background-color: #d32f2f;
+            color: white;
+        }
+        
+        .business-stats {
+            background: linear-gradient(135deg, var(--success) 0%, var(--warning) 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .booking-card {
+            border-left: 4px solid var(--success);
+            background: white;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .booking-card.pending {
+            border-left-color: var(--warning);
+        }
+        
+        .booking-card.cancelled {
+            border-left-color: var(--danger);
+        }
+        
+        .badge-booking {
+            background-color: var(--success);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+        
+        .badge-pending {
+            background-color: var(--warning);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+        
+        .badge-cancelled {
+            background-color: var(--danger);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+        
+        .sport-tag {
+            background-color: var(--primary-light);
+            color: var(--primary);
+            padding: 4px 8px;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            margin-right: 5px;
+            margin-bottom: 5px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-trophy-fill me-2"></i>SportConnect
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a href="user-profile.html" class="btn btn-outline-primary me-2">
+                    <i class="bi bi-person me-2"></i>Profile
+                </a>
+                <button class="btn btn-logout" onclick="logout()">
+                    <i class="bi bi-box-arrow-right me-2"></i>Logout
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="welcome-card">
+            <h1 class="mb-3">Welcome back, <span id="turfName">Turf Admin</span>! 🏟️</h1>
+            <p class="mb-0">Manage your sports facility and maximize bookings</p>
+        </div>
+
+        <!-- Business Statistics -->
+        <div class="business-stats">
+            <div class="row text-center">
+                <div class="col-md-3">
+                    <h3 id="totalBookings">0</h3>
+                    <p class="mb-0">Total Bookings</p>
+                </div>
+                <div class="col-md-3">
+                    <h3 id="todayBookings">0</h3>
+                    <p class="mb-0">Today's Bookings</p>
+                </div>
+                <div class="col-md-3">
+                    <h3 id="revenue">₹0</h3>
+                    <p class="mb-0">Today's Revenue</p>
+                </div>
+                <div class="col-md-3">
+                    <h3 id="rating">4.6</h3>
+                    <p class="mb-0">Rating</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="stats-card">
+                    <h5><i class="bi bi-building text-primary me-2"></i>Turf Name</h5>
+                    <p id="turfNameDisplay" class="mb-0">Loading...</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stats-card">
+                    <h5><i class="bi bi-geo-alt-fill text-success me-2"></i>Location</h5>
+                    <p id="turfLocation" class="mb-0">Loading...</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stats-card">
+                    <h5><i class="bi bi-phone text-warning me-2"></i>Contact</h5>
+                    <p id="turfContact" class="mb-0">Loading...</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-8">
+                <div class="stats-card">
+                    <h5><i class="bi bi-calendar-event text-info me-2"></i>Today's Bookings</h5>
+                    <div id="todayBookingsList">
+                        <div class="booking-card">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">Football - Ground A</h6>
+                                    <p class="mb-1 text-muted">4:00 PM - 6:00 PM</p>
+                                    <p class="mb-0 text-muted">Booked by: John Doe</p>
+                                </div>
+                                <span class="badge-booking">Confirmed</span>
+                            </div>
+                        </div>
+                        <div class="booking-card pending">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">Cricket - Ground B</h6>
+                                    <p class="mb-1 text-muted">6:00 PM - 8:00 PM</p>
+                                    <p class="mb-0 text-muted">Booked by: Jane Smith</p>
+                                </div>
+                                <span class="badge-pending">Pending</span>
+                            </div>
+                        </div>
+                        <div class="booking-card">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">Tennis - Court 1</h6>
+                                    <p class="mb-1 text-muted">7:00 PM - 8:00 PM</p>
+                                    <p class="mb-0 text-muted">Booked by: Mike Johnson</p>
+                                </div>
+                                <span class="badge-booking">Confirmed</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary mt-3">View All Bookings</button>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stats-card">
+                    <h5><i class="bi bi-sport-american-football text-success me-2"></i>Available Sports</h5>
+                    <div id="availableSports" class="mb-3">
+                        <!-- Sports will be populated dynamically -->
+                    </div>
+                    <button class="btn btn-outline-primary">Manage Sports</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="stats-card">
+                    <h5><i class="bi bi-graph-up-arrow text-success me-2"></i>Revenue Analytics</h5>
+                    <p class="text-muted">Track your turf's financial performance and growth.</p>
+                    <button class="btn btn-outline-success">View Analytics</button>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="stats-card">
+                    <h5><i class="bi bi-calendar-check text-info me-2"></i>Maintenance Schedule</h5>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span>Ground A - Grass cutting</span>
+                            <span class="badge-pending">Tomorrow</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Court 1 - Net replacement</span>
+                            <span class="badge-pending">This weekend</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-outline-info">Schedule Maintenance</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="stats-card">
+                    <h5><i class="bi bi-people-fill text-primary me-2"></i>Quick Actions</h5>
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <button class="btn btn-primary w-100">
+                                <i class="bi bi-calendar-plus me-2"></i>New Booking
+                            </button>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <button class="btn btn-success w-100">
+                                <i class="bi bi-person-plus me-2"></i>Add Customer
+                            </button>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <button class="btn btn-warning w-100">
+                                <i class="bi bi-tools me-2"></i>Maintenance
+                            </button>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <button class="btn btn-info w-100">
+                                <i class="bi bi-gear me-2"></i>Settings
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Check if user is logged in and has correct role
+        function checkAuth() {
+            const userData = sessionStorage.getItem('userData');
+            if (!userData) {
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            try {
+                const user = JSON.parse(userData);
+                
+                // Check if user is a turf admin
+                if (user.user_type !== 'turf') {
+                    // Redirect to appropriate dashboard based on user type
+                    let dashboardUrl = '';
+                    switch(user.user_type) {
+                        case 'player':
+                            dashboardUrl = 'player-dashboard.html';
+                            break;
+                        case 'coach':
+                            dashboardUrl = 'coach-dashboard.html';
+                            break;
+                        default:
+                            dashboardUrl = 'login.html';
+                    }
+                    window.location.href = dashboardUrl;
+                    return;
+                }
+                
+                displayUserInfo(user);
+            } catch (error) {
+                console.error('Error parsing user data:', error);
+                window.location.href = 'login.html';
+            }
+        }
+        
+        // Display user information
+        function displayUserInfo(user) {
+            document.getElementById('turfName').textContent = user.first_name + ' ' + user.last_name;
+            document.getElementById('turfNameDisplay').textContent = user.turf_name || 'Not specified';
+            document.getElementById('turfLocation').textContent = user.location || 'Not specified';
+            document.getElementById('turfContact').textContent = user.business_phone || 'Not specified';
+            
+            // Set mock statistics (in real app, these would come from database)
+            document.getElementById('totalBookings').textContent = '156';
+            document.getElementById('todayBookings').textContent = '8';
+            document.getElementById('revenue').textContent = '₹12,500';
+            document.getElementById('rating').textContent = '4.6';
+            
+            // Display available sports
+            if (user.available_sports) {
+                const sports = user.available_sports.split(', ');
+                const sportsContainer = document.getElementById('availableSports');
+                sportsContainer.innerHTML = '';
+                
+                sports.forEach(sport => {
+                    const sportTag = document.createElement('span');
+                    sportTag.className = 'sport-tag';
+                    sportTag.textContent = sport;
+                    sportsContainer.appendChild(sportTag);
+                });
+            }
+        }
+        
+        // Logout function
+        function logout() {
+            sessionStorage.removeItem('userData');
+            window.location.href = 'login.html';
+        }
+        
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuth();
+        });
+    </script>
+</body>
+</html>
